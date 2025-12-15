@@ -1,0 +1,3152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<!--<title>Debt Sustainability Calculator</title>-->
+<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"/>
+<script src="https://cdn.plot.ly/plotly-2.27.1.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.1/nouislider.min.js"></script>
+
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background-color:  white;;
+    color: black;
+    font-style: sans-serif;
+
+
+  }
+  h1 {
+    text-align: left;
+    margin-top: 40px;
+    margin-left: 40px;
+    font-size: 26px;
+    font-style: sans-serif;
+
+  }
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 10px 40px;
+    box-sizing: border-box;
+    
+  }
+@media (max-width: 850px) {
+  .container {
+    padding: 10px 10px;
+  }
+}
+  .sidebar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0px;
+    padding-top: 15px;
+    padding-left: 20px;
+    padding-right: 0px;
+    padding-bottom: 5px;
+    background-color: #f0f0f5;
+    border-radius: 0px;
+    border: 2px;
+    /* justify-content: left; */
+    align-items: center;
+    /* box-shadow:  0px -15px 25px rgb(0 0 0 /7%); */
+  }
+
+  .sliders-row {
+    display: flex;
+    flex-wrap: nowrap; /* force single line */
+    gap: 10px;
+    overflow-x: hidden; /* remove scroll */
+  }
+  .control-group {
+    flex: 1 1 0;  /* allow shrinking */
+    min-width: 165px; /* 300, 210 , 180*/
+    padding: 5px 0px;
+  }
+  .control-group label {
+    font-family: 'Lato', sans-serif;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .control-group input[type="range"] {
+    width: 120px;
+  }
+  @media (max-width: 550px) {
+    .control-group input[type="range"] {
+      width: 250px;
+    }
+  }
+  .main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .graph-container {
+    flex: 0 0 48%;   /* each takes ~half the row */
+/*    max-width: 48%; */  
+    min-width: 300px;
+    height: 300px;
+  }
+  @media (max-width: 850px) {
+  .graph-container {
+    flex: 0 0 90%;
+  }
+}
+
+  .overlay {
+    position: fixed;
+    top: 15%;
+    left: 50%;
+    width: 300px;
+    background-color: #f0f0f5;
+    border: 2px solid #fff;
+    border-radius: 15px;
+    padding: 20px;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0px 5px 25px rgb(0 0 0 /30%);
+  }
+  @media (max-width: 550px) {
+  .graph-container {
+    flex: 0 0 40%;
+  }
+  .overlay {
+    left:5%
+  }
+}
+  .button {
+    background-color: rgb(50, 50, 50);
+    color: #fff;
+    border: 1.25px solid black;
+    border-radius: 5px;
+    padding: 8px 8px;
+    cursor: pointer;
+    font-size: 10px;
+    margin-bottom: 2px;
+    min-width: 140px;
+    max-height: 30px;
+    text-align: center;
+    font-weight: bold;
+    
+  }
+  .button:hover {
+    background-color: black !important;
+    
+
+  }
+ .button-column{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+ }
+ 
+
+
+  .control-group.year-interval {
+    flex: 1 1 20px;
+  }
+
+  /* Chrome, Safari, Edge */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    max-width: none;
+    height: 8px;
+    background: transparent; 
+    border: none;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: #f0f0f5;
+    border: 0.25px solid #28294f;
+    border-radius: 4px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px;
+    height: 13px;
+    background: rgb(50, 50, 50);
+    border: 0.25px solid black;
+    border-radius: 50%;
+    margin-top: -4px;
+  }
+  input[type=range]::-webkit-slider-thumb:hover {
+    background-color: black;
+    cursor: pointer;
+  }
+  /* Firefox */
+  input[type=range]::-moz-range-track {
+    height: 8px;
+    background: #f0f0f5;
+    border: 0.25px solid #28294f;
+    border-radius: 4px;
+  }
+  input[type=range]::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    background: rgb(50, 50, 50);
+    border: 0.25px solid black;
+    border-radius: 50%;
+  }
+
+  /* noUiSlider custom styling */
+  .noUi-target {
+    background: #f0f0f5 !important;
+    border-radius: 5px !important;
+    height: 8px !important;
+    border: 1px solid #28294f !important;
+    box-shadow: none !important;
+    width: 132px;
+    padding-right: 8px;
+  }
+  @media (max-width: 550px) {
+    .noUi-target {
+      width: 262px;
+    }
+  }
+  .noUi-connect {
+    background: black !important;
+    opacity: 0.75;
+    border-radius: 5px !important;
+    border: none;
+  }
+  .noUi-handle {
+    width: 13px !important;
+    height: 13px !important;
+    border-radius: 50% !important;
+    background: rgb(50, 50, 50) !important;
+    border: 1px solid black !important;
+    box-shadow: 0 0 2px rgba(0,0,0,0.3) !important;
+    cursor: pointer !important;
+    top: -4px !important;
+    transform: translateX(-50%);
+  }
+  .noUi-handle:before,
+  .noUi-handle:after {
+    display: none !important;
+  }
+  /* Beige outer background */
+/* .page-wrapper {
+  background-color: rgb(239, 239, 239);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 1cm; 
+  box-sizing: border-box;
+} */
+
+/* Calculator box */
+.calculator-container {
+  background-color: white;
+  /* max-width: 930px;  */
+  width: 100%;
+  border-radius: 0px;
+  box-sizing: border-box;
+}
+
+
+.control-group span {
+  font-size: 10px; /* or smaller */
+  
+  
+}
+.sidebar-top {
+  justify-content: right;
+}
+
+.noUi-handle:hover,
+.noUi-handle:focus {
+  background-color: black !important;
+}
+
+p {
+  margin-left: 40px;
+  margin-right: 40px;
+  font-size: 8pt;
+  font-style: sans-serif;
+  word-spacing: 2px;
+  
+  line-height: 1.35;
+  vertical-align: middle;
+
+}
+@media (max-width: 850px) {
+  p {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: #E86100;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.popup-screen {
+  z-index: 99999;
+  position: fixed;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  transition: 0.5s ease;
+  transition-property: visibility;
+}
+.popup-screen.active {
+  visibility: visible;
+}
+.popup-box {
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  padding: 30px 30px 40px 25px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 25px rgb(0 0 0 /30%);
+  max-width: 420px;
+  transform: scale(0);
+  transition: 0.5s ease;
+  transition-property: transform;
+  text-align: center;
+}
+.popup-screen.active .popup-box {
+  transform: scale(1) translateY(-130%);;
+}
+.popup-box .btn{
+  color:#fff;
+  background:black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  position: relative;
+  opacity: 0.75;
+  text-decoration: none;
+  font-size: 12px;
+  justify-content: center;
+
+}
+.popup-box .btn:hover{
+  opacity: 1;
+  cursor: pointer;
+}
+
+</style>
+
+<div class = 'popup-screen'>
+  <div class = 'popup-box'>
+    <h4>Šā kalkulatora reakciju rezultāti, kā arī ilgtermiņa prognozes nav Latvijas Bankas oficiālās prognozes.<br>Tās ir paredzētas tikai tam, lai sniegtu ieskatu ar valsts parādu saistītu rādītāju galvenajās mijiedarbībās.<br> <br>Mainīgo savstarpējas elastības lielākoties ir pieņemtas lineāras, un kalkulatorā pieņemts, ka valsts saistību neizpilde (default) iestājas brīdī, kad parāda attiecība pret IKP sasniedz 300 %. Faktiski šīs slieksnis nav nosakāms iepriekš, un tas var iestāties arī pie zemākas parāda un IKP attiecības. Turklāt spēcīgu šoku apstākļos var mainīties arī sakarības starp mainīgajiem (elastības).</h4>
+    <a class="btn" >sapratu</a>
+  </div>
+</div>
+<script>
+    const popupScreen = document.querySelector('.popup-screen');
+    const popupbtn = document.querySelector('.popup-box .btn')
+
+    window.addEventListener('load', () =>{
+      setTimeout(() =>{
+          popupScreen.classList.add('active');
+      }, 1000);
+    });
+
+    popupbtn.addEventListener('click', () =>{
+      popupScreen.classList.remove('active');
+    })
+</script>
+
+</head>
+<body>
+  
+  <div class="page-wrapper">
+    <div class="calculator-container">
+<h1>Latvijas valsts parāda ilgtspējas kalkulators</h1>
+<p>Valsts parāda ilgtspējas kalkulators ir interaktīvs rīks, kas ļauj lietotājam iepazīties ar piecu makroekonomisko mainīgo šoku ilgtermiņa sekām. 
+Mainīgie, kuru ietekmi var aplūkot: primārā bilance, ECB refinansēšanas operāciju procentu likme, Latvijas parāda riska prēmija, reālā IKP pieauguma temps un inflācija (IKP deflators).
+Šo mainīgo ietekmi var grafiski redzēt kā deviāciju no bāzes scenārija, kurš tiek prognozēts 2025.–2075. gada periodam, balstoties uz aplēsēm un pieņēmumiem par šādiem ilgtermiņa rādītājiem: reālā IKP pieauguma tempu, inflāciju, ECB refinansēšanas operāciju procentu likmi, primāro bilanci un Latvijas valsts obligāciju procentu likmi. 
+Ilgtermiņa reālā IKP pieauguma temps aplēsts aptuveni 2.4 %, pieņemot, ka tas saglabāsies potenciālās izlaides apstākļos, kura prognozēta, izmantojot 
+<a href="https://www.ecb.europa.eu/pub/pdf/scpwps/ecb.wp2523~2c34a5782a.en.pdf">'nenovērojamu komponentu modeli'</a>.
+Inflācijas vērtība iegūta, pieņemot, ka ECB izdosies to noturēt
+<a href="https://www.ecb.europa.eu/mopo/strategy/pricestab/html/index.en.html">2 % mērķa rādītāja</a> līmenī.
+Primārā bilance ilgtermiņā pieņemta vienāda ar Finanšu ministrijas ilgtermiņa scenārijiem izmantoto:
+<a href="https://www.fm.gov.lv/lv/media/19110/download?attachment">-1 %</a>.
+ECB refinansēšanas operāciju procentu likme ilgtermiņā iegūta 2 %, pieņemot, ka <a href="https://www.ecb.europa.eu/press/economic-bulletin/focus/2025/html/ecb.ebbox202501_08~3be5a005f9.en.html">r* paliks pie aplēšu mediānas: 0 %</a>.
+Latvijas valsts obligāciju procentu likmes noteicošo faktoru koeficienti aplēsti, pielietojot paneļa regresiju Eiropas valstu parāda likmju, parāda apjoma (% no IKP) un ECB refinansēšanas operāciju procentu likmes datiem. 
+Atbilstoši šiem koeficientiem Latvijas valsts obligāciju procentu likme scenārijā bez šokiem nākamajos 50 gados pakāpeniski samazināsies no 2.1 % līdz 1.6 %. 
+Parāda attiecības pret IKP un kopējās budžeta bilances ilgtermiņa vērtības izriet no aprēķiniem, kas balstīti uz iepriekš minētajiem mainīgajiem. 
+To vērtības scenārijā bez šokiem uzlabosies, scenārija beigās sasniedzot attiecīgi 45 % un –1.8 %. Periodam, starp 2025. un 2028. gadu, reālā IKP, IKP deflatora, un kopējās budžeta bilances vērtības tiek pielīdzinātas Finanšu ministrijas prognozēm<sup><a href="https://www.fm.gov.lv/lv/media/22190/download?attachment">1</a>,<a href="https://www.fm.gov.lv/lv/media/22439/download?attachment">2</a></sup>.
+</p>
+<p>
+Mainīgo vērtību un to efektu periodu var kontrolēt, izmantojot melnos slīdņus. Poga "Izslēgt šokus" atgriež sākotnējā scenārijā. Poga "Papildu grafiki" ļauj apskatīt papildu ekonomiskos rādītājus. Ieslēdzot šokus, grafikos redzēsiet stabiņu grēdas. Novietojot uz tām kursoru, redzēsiet, kura rādītāja ietekme mainīja rezultātus. Novietojot kursoru uz simbola "ⓘ️", redzēsiet attiecīgā ekonomiskā rādītāja aprakstu un šā rādītāja ietekmētos un to ietekmējošos faktorus.
+
+
+</p>
+<div class="container">
+<!-- Sidebar with controls -->
+<div class="sidebar" id="sidebar">
+  <!-- <div class="sidebar-top"> -->
+
+    <div>
+      <div class="control-group">
+        <label for="stPrimaryBalance">Primārās bilances šoks (% no IKP)</label>
+        <input id="stPrimaryBalance" max="2.5" min="-5" step="0.5" type="range" value="0"/>
+        <span id="stPrimaryBalance_val">0</span>
+        
+        <label for="primaryShockSlider"></label>
+        <div id="primaryShockSlider" ></div>
+        <span id="startDatePBshock_val">2025–2029</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="control-group">
+        <label for="stECBrefinancing">ECB likmes šoks (pp)</label>
+        <input id="stECBrefinancing" max="2" min="-2" step="0.25" type="range" value="0"/>
+        <span id="stECBrefinancing_val">0</span>
+        
+        <label for="ecbShockSlider"></label>
+        <div id="ecbShockSlider" ></div>
+        <span id="startDateRateShock_val">2025–2029</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="control-group">
+        <label for="stLVpremium">LV riska prēmijas šoks (pp)</label>
+        <input id="stLVpremium" max="2" min="-1" step="0.25" type="range" value="0"/>
+        <span id="stLVpremium_val">0</span>
+        
+        <label for="LVShockSlider"></label>
+        <div id="LVShockSlider" ></div>
+        <span id="startDateLVpremium_val">2025-2029</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="control-group">
+        <label for="stPotGrowthRate">IKP pieauguma tempa šoks (pp)</label>
+        <input id="stPotGrowthRate" max="5" min="-5" step="0.5" type="range" value="0"/>
+        <span id="stPotGrowthRate_val">0</span>
+        
+        <label for="growthShockSlider"></label>
+        <div id="growthShockSlider" ></div>
+        <span id="startDateGrowthShock_val">2025–2029</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="control-group">
+        <label for="stInflationTarget">Inflācijas šoks (pp)</label>
+        <input id="stInflationTarget" max="8" min="-5" step="0.5" type="range" value="0"/>
+        <span id="stInflationTarget_val">0</span>
+        
+        <label for="inflationShockSlider"></label>
+        <div id="inflationShockSlider" ></div>
+        <span id="startDateInflationShock_val">2025–2029</span>
+      </div>
+    </div>
+
+  <!-- </div> -->
+
+  <!-- Buttons column -->
+  <div class="button-column">
+    <button class="button" id="reset">izslēgt šokus</button>
+    <button class="button" id="showGraphChooser">papildu grafiki</button>
+  </div>
+  <div class="button-column">
+    <button class="button" id="toggleOverlay", style="display:none;">Pielāgot ilgtermiņa vērtības</button>
+  </div>
+</div>
+<!-- Main content with graphs -->
+<div class="main">
+<div class="graph-container" id="graph_dPercentageGDP"></div>
+<div class="graph-container" id="graph_OBpercentGDP"></div>
+<!--<div class="graph-container" id="graph_decomp"></div>-->
+<div class="graph-container" id="graph_piGDPdeflator"></div>
+<div class="graph-container" id="graph_gRate"></div>
+<div class="graph-container" id="graph_ECBrefinancingRate"></div>
+<div class="graph-container" id="graph_LVyield"></div>
+
+<div class="graph-container" id="graph_interest_pct_gdp"></div>
+<div class="graph-container" id="graph_rMinG"></div>
+
+
+<div class="graph-container" id="graph_DEBT" style="display:none;"></div>
+<div class="graph-container" id="graph_GDPn" style="display:none;"></div>
+<div class="graph-container" id="graph_OBmEUR" style="display:none;"></div>
+<div class="graph-container" id="graph_PBmEUR" style="display:none;"></div>
+<div class="graph-container" id="graph_PBpercentGDP" style="display:none;"></div>
+<div class="graph-container" id="graph_INTmEUR" style="display:none;"></div>
+<div class="graph-container" id="graph_effectiveRate" style="display:none;"></div>
+<div class="graph-container" id="graph_realRate" style="display:none;"></div>
+</div>
+</div>
+<!-- Overlay for shock start years -->
+
+<div class="overlay" id="graphChooserPanel">
+  <div class="control-group">
+    <input type="checkbox" id="graph_DEBT_checkbox"> Parāds (milj. EUR)<br>
+    <input type="checkbox" id="graph_GDPn_checkbox"> Nominālais IKP (milj. EUR)<br>
+    <input type="checkbox" id="graph_OBmEUR_checkbox"> Kopējā budžeta bilance (milj. EUR)<br>
+    <input type="checkbox" id="graph_PBmEUR_checkbox"> Primārā bilance (milj. EUR)<br>
+    <input type="checkbox" id="graph_PBpercentGDP_checkbox"> Primārā bilance (% no IKP)<br>
+    
+    
+<!--    <input type="checkbox" id="graph_LVyield_checkbox"> Valdības obligāciju ienesīgums (%)<br>-->
+    <!-- <input type="checkbox" id="graph_rMinG_checkbox"> r-g (pp)<br> -->
+    <input type="checkbox" id="graph_INTmEUR_checkbox"> Procentu maksājumi (milj. EUR)<br>
+    <!-- <input type="checkbox" id="graph_interest_pct_gdp_checkbox"> Procentu maksājumi (% no IKP)<br> -->
+    <input type="checkbox" id="graph_effectiveRate_checkbox"> Nominālā efektīvā likme (%)<br>
+    <input type="checkbox" id="graph_realRate_checkbox"> Reālā efektīvā likme (%)<br>
+  </div>
+</div>
+
+<div class="overlay" id="overlayPanel">
+  
+<div class="control-group">
+<label for="ltPotGrowthRate">Potenciālās izlaides temps (%)</label>
+<input id="ltPotGrowthRate" max="5" min="0" step="0.1" type="range" value="2.6"/>
+<span id="ltPotGrowthRate_val">2.6</span>
+</div>
+<div class="control-group">
+<label for="ltInflationTarget">Ilgtermiņa inflācija (%)</label>
+<input id="ltInflationTarget" max="10" min="0" step="0.1" type="range" value="2"/>
+<span id="ltInflationTarget_val">2</span>
+</div>
+<div class="control-group">
+<label for="ltPrimaryBalance">Ilgtermiņa primārā bilance (% no IKP)</label>
+<input id="ltPrimaryBalance" max="5" min="-5" step="0.1" type="range" value="-0.7"/>
+<span id="ltPrimaryBalance_val">-0.7</span>
+</div>
+<div class="control-group">
+<label for="ltECBrefinancing">Ilgtermiņa ECB likme (%)</label>
+<input id="ltECBrefinancing" max="5" min="0" step="0.1" type="range" value="2"/>
+<span id="ltECBrefinancing_val">2</span>
+</div>
+
+  
+<div class="control-group">
+  <script>const shockIntervals = {
+      inflation: [2025, 2029],
+      growth: [2025, 2029],
+      ecb: [2025, 2029],
+      LV: [2025, 2029],
+      primary: [2025, 2029]
+    };</script>
+
+
+<script>
+  
+const PLOT_CFG = { displayModeBar: false, responsive: true};
+const THEME_LAYOUT = {
+  plot_bgcolor: '#FFF',
+  paper_bgcolor: '#FFF',
+  font: {color: '#28294f', size: 10},
+  colorway: ['#d34f73', '#28294f', '#28294f'],
+  margin: { t: 50, l: 40, r: 20, b: 70},
+  legend: {
+    orientation: 'h',
+    y: -0.2,
+    x: 0.5,
+    xanchor: 'center',
+    yanchor: 'top'
+  }
+}
+const inflationSlider = document.getElementById('inflationShockSlider');
+noUiSlider.create(inflationSlider, {
+    start: [2025, 2029],
+    connect: true,
+    range: {
+        'min': 2025,
+        'max': 2075
+    },
+    step: 1,
+    tooltips: false,
+    format: {
+        to: value => Math.round(value),
+        from: value => Number(value)
+    }
+});
+
+
+let debounceTimer;
+inflationSlider.noUiSlider.on('slide', function (values, handle) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    let val1 = parseFloat(values[0]);
+    let val2 = parseFloat(values[1]);
+
+    let val11 = val1;
+    let val22 = val2;
+
+    if (handle === 1 && val2 - val1 > 9) {
+      val11 = val2 - 9;
+      inflationSlider.noUiSlider.set([val11, val2]);
+
+    } else if (handle === 0 && val2 - val1 > 9) {
+      val22 = val1 + 9;
+      inflationSlider.noUiSlider.set([val1, val22]);
+    }
+
+    shockIntervals.inflation = [
+      parseInt(val11),
+      parseInt(val22)
+    ];
+
+    document.getElementById('startDateInflationShock_val').textContent = `${val11}–${val22}`;
+    redraw();
+  }, 150); // adjust delay as needed
+});
+</script>
+
+
+</div>
+<div class="control-group">
+
+<script>
+const growthSlider = document.getElementById('growthShockSlider');
+noUiSlider.create(growthSlider, {
+    start: [2025, 2029],
+    connect: true,
+    range: {
+        'min': 2025,
+        'max': 2075
+    },
+    step: 1,
+    tooltips: false,
+    format: {
+        to: value => Math.round(value),
+        from: value => Number(value)
+    }
+});
+growthSlider.noUiSlider.on('slide', function (values, handle) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    let val1 = parseFloat(values[0]);
+    let val2 = parseFloat(values[1]);
+
+    let val11 = val1;
+    let val22 = val2;
+
+    if (handle === 1 && val2 - val1 > 9) {
+      val11 = val2 - 9;
+      growthSlider.noUiSlider.set([val11, val2]);
+
+    } else if (handle === 0 && val2 - val1 > 9) {
+      val22 = val1 + 9;
+      growthSlider.noUiSlider.set([val1, val22]);
+    }
+
+    shockIntervals.growth = [
+      parseInt(val11),
+      parseInt(val22)
+    ];
+
+    document.getElementById('startDateGrowthShock_val').textContent = `${val11}–${val22}`;
+    redraw();
+  }, 150); // adjust delay as needed
+});
+</script>
+
+</div>
+<div class="control-group">
+
+<script>
+const ecbSlider = document.getElementById('ecbShockSlider');
+noUiSlider.create(ecbSlider, {
+    start: [2025, 2029],
+    connect: true,
+    range: {
+        'min': 2025,
+        'max': 2075
+    },
+    step: 1,
+    tooltips: false,
+    format: {
+        to: value => Math.round(value),
+        from: value => Number(value)
+    }
+});
+ecbSlider.noUiSlider.on('slide', function (values, handle) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    let val1 = parseFloat(values[0]);
+    let val2 = parseFloat(values[1]);
+
+    let val11 = val1;
+    let val22 = val2;
+
+    if (handle === 1 && val2 - val1 > 9) {
+      val11 = val2 - 9;
+      ecbSlider.noUiSlider.set([val11, val2]);
+
+    } else if (handle === 0 && val2 - val1 > 9) {
+      val22 = val1 + 9;
+      ecbSlider.noUiSlider.set([val1, val22]);
+    }
+
+    shockIntervals.ecb = [
+      parseInt(val11),
+      parseInt(val22)
+    ];
+
+    document.getElementById('startDateRateShock_val').textContent = `${val11}–${val22}`;
+    redraw();
+  }, 150); // adjust delay as needed
+});
+
+</script>
+
+</div>
+<div class="control-group">
+  
+<script>
+const LVSlider = document.getElementById('LVShockSlider');
+noUiSlider.create(LVSlider, {
+    start: [2025, 2029],
+    connect: true,
+    range: {
+        'min': 2025,
+        'max': 2075
+    },
+    step: 1,
+    tooltips: false,
+    format: {
+        to: value => Math.round(value),
+        from: value => Number(value)
+    }
+});
+LVSlider.noUiSlider.on('slide', function (values, handle) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    let val1 = parseFloat(values[0]);
+    let val2 = parseFloat(values[1]);
+
+    let val11 = val1;
+    let val22 = val2;
+
+    if (handle === 1 && val2 - val1 > 9) {
+      val11 = val2 - 9;
+      LVSlider.noUiSlider.set([val11, val2]);
+
+    } else if (handle === 0 && val2 - val1 > 9) {
+      val22 = val1 + 9;
+      LVSlider.noUiSlider.set([val1, val22]);
+    }
+
+    shockIntervals.LV = [
+      parseInt(val11),
+      parseInt(val22)
+    ];
+
+    document.getElementById('startDateLVpremium_val').textContent = `${val11}–${val22}`;
+    redraw();
+  }, 150); // adjust delay as needed
+});
+</script>
+
+</div>
+<div class="control-group">
+
+<script>
+const primarySlider = document.getElementById('primaryShockSlider');
+noUiSlider.create(primarySlider, {
+    start: [2025, 2029],
+    connect: true,
+    range: {
+        'min': 2025,
+        'max': 2075
+    },
+    step: 1,
+    tooltips: false,
+    format: {
+        to: value => Math.round(value),
+        from: value => Number(value)
+    }
+});
+primarySlider.noUiSlider.on('slide', function (values, handle) {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    let val1 = parseFloat(values[0]);
+    let val2 = parseFloat(values[1]);
+
+    let val11 = val1;
+    let val22 = val2;
+
+    if (handle === 1 && val2 - val1 > 9) {
+      val11 = val2 - 9;
+      primarySlider.noUiSlider.set([val11, val2]);
+
+    } else if (handle === 0 && val2 - val1 > 9) {
+      val22 = val1 + 9;
+      primarySlider.noUiSlider.set([val1, val22]);
+    }
+
+    shockIntervals.primary = [
+      parseInt(val11),
+      parseInt(val22)
+    ];
+
+    document.getElementById('startDatePBshock_val').textContent = `${val11}–${val22}`;
+    redraw();
+  }, 150); // adjust delay as needed
+});
+
+</script>
+
+</div>
+</div>
+<script>
+
+
+    // Dataset converted from R tibble to JavaScript array of objects
+    const DataSet = [
+  {
+    "time": "1995",
+    "DEBT": 561.3,
+    "dPercentageGDP": 14.3,
+    "GDPn": 4008.1,
+    "GDPr": 10441.1,
+    "INTmEUR": 32.5,
+    "interest_pct_gdp": 0.8109,
+    "OBpercentGDP": -1.4745,
+    "OBmEUR": -59.1,
+    "PBpercentGDP": -0.6637,
+    "PBmEUR": -26.6
+  },
+  {
+    "time": "1996",
+    "DEBT": 625.6,
+    "dPercentageGDP": 13.6,
+    "GDPn": 4565.2,
+    "GDPr": 10681.2,
+    "gRate": 2.2996,
+    "effectiveRate": 10.9033,
+    "INTmEUR": 61.2,
+    "interest_pct_gdp": 1.3406,
+    "realRate": -0.3565,
+    "OBpercentGDP": -0.4337,
+    "OBmEUR": -19.8,
+    "PBpercentGDP": 0.9069,
+    "piGDPdeflator": 11.3,
+    "PBmEUR": 41.4,
+    "rMinG": -2.656
+  },
+  {
+    "time": "1997",
+    "DEBT": 619.5,
+    "dPercentageGDP": 10.9,
+    "GDPn": 5593.9,
+    "GDPr": 11660.8,
+    "gRate": 9.1713,
+    "effectiveRate": 8.0083,
+    "INTmEUR": 50.1,
+    "interest_pct_gdp": 0.8956,
+    "realRate": -3.7359,
+    "OBpercentGDP": 1.4534,
+    "OBmEUR": 81.3,
+    "PBpercentGDP": 0.5578,
+    "piGDPdeflator": 12.2,
+    "PBmEUR": 31.2,
+    "rMinG": -12.9072
+  },
+  {
+    "time": "1998",
+    "DEBT": 574.5,
+    "dPercentageGDP": 9.3,
+    "GDPn": 6230.7,
+    "GDPr": 12424.6,
+    "gRate": 6.5502,
+    "effectiveRate": 6.6828,
+    "INTmEUR": 41.4,
+    "interest_pct_gdp": 0.6645,
+    "realRate": 2.0888,
+    "OBpercentGDP": 0.0289,
+    "OBmEUR": 1.8,
+    "PBpercentGDP": -0.6356,
+    "piGDPdeflator": 4.5,
+    "PBmEUR": -39.6,
+    "rMinG": -4.4613
+  },
+  {
+    "time": "1999",
+    "DEBT": 904.6,
+    "dPercentageGDP": 12.4,
+    "GDPn": 6850.7,
+    "GDPr": 12774.8,
+    "gRate": 2.8186,
+    "effectiveRate": 7.7981,
+    "INTmEUR": 44.8,
+    "interest_pct_gdp": 0.6539,
+    "realRate": 0.8401,
+    "OBpercentGDP": -3.839,
+    "OBmEUR": -263,
+    "PBpercentGDP": -3.1851,
+    "piGDPdeflator": 6.9,
+    "PBmEUR": -218.2,
+    "rMinG": -1.9785,
+    "ECBrefinancingRate": 2.7123
+  },
+  {
+    "time": "2000",
+    "DEBT": 1011,
+    "dPercentageGDP": 12.4,
+    "GDPn": 8418,
+    "GDPr": 13521,
+    "gRate": 5.8412,
+    "effectiveRate": 8.9321,
+    "INTmEUR": 80.8,
+    "interest_pct_gdp": 0.9598,
+    "realRate": -6.1739,
+    "OBpercentGDP": -2.7928,
+    "OBmEUR": -235.1,
+    "PBpercentGDP": -1.833,
+    "piGDPdeflator": 16.1,
+    "PBmEUR": -154.3,
+    "rMinG": -12.0151,
+    "ECBrefinancingRate": 3.8757
+  },
+  {
+    "time": "2001",
+    "DEBT": 1304.4,
+    "dPercentageGDP": 14.1,
+    "GDPn": 9182.2,
+    "GDPr": 14394.5,
+    "gRate": 6.4603,
+    "effectiveRate": 8.3976,
+    "INTmEUR": 84.9,
+    "interest_pct_gdp": 0.9246,
+    "realRate": 5.7538,
+    "OBpercentGDP": -1.9865,
+    "OBmEUR": -182.4,
+    "PBpercentGDP": -1.0618,
+    "piGDPdeflator": 2.5,
+    "PBmEUR": -97.5,
+    "rMinG": -0.7065,
+    "LVyield": 7.57,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2002",
+    "DEBT": 1251.5,
+    "dPercentageGDP": 13.4,
+    "GDPn": 9841,
+    "GDPr": 15497.9,
+    "gRate": 7.6654,
+    "effectiveRate": 5.6118,
+    "INTmEUR": 73.2,
+    "interest_pct_gdp": 0.7438,
+    "realRate": 6.1425,
+    "OBpercentGDP": -2.3971,
+    "OBmEUR": -235.9,
+    "PBpercentGDP": -1.6533,
+    "piGDPdeflator": -0.5,
+    "PBmEUR": -162.7,
+    "rMinG": -1.5229,
+    "LVyield": 5.41,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2003",
+    "DEBT": 1410.2,
+    "dPercentageGDP": 14.8,
+    "GDPn": 10029,
+    "GDPr": 16804.3,
+    "gRate": 8.4295,
+    "effectiveRate": 6.3524,
+    "INTmEUR": 79.5,
+    "interest_pct_gdp": 0.7927,
+    "realRate": 13.1408,
+    "OBpercentGDP": -1.6382,
+    "OBmEUR": -164.3,
+    "PBpercentGDP": -0.8455,
+    "piGDPdeflator": -6,
+    "PBmEUR": -84.8,
+    "rMinG": 4.7113,
+    "LVyield": 4.9,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2004",
+    "DEBT": 1628.6,
+    "dPercentageGDP": 15.2,
+    "GDPn": 11229.7,
+    "GDPr": 18270.5,
+    "gRate": 8.7251,
+    "effectiveRate": 6.1693,
+    "INTmEUR": 87,
+    "interest_pct_gdp": 0.7747,
+    "realRate": 3.077,
+    "OBpercentGDP": -1.2378,
+    "OBmEUR": -139,
+    "PBpercentGDP": -0.4631,
+    "piGDPdeflator": 3,
+    "PBmEUR": -52,
+    "rMinG": -5.6481,
+    "LVyield": 4.86,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2005",
+    "DEBT": 1638.8,
+    "dPercentageGDP": 12.4,
+    "GDPn": 13226.9,
+    "GDPr": 20392.6,
+    "gRate": 11.6149,
+    "effectiveRate": 4.6297,
+    "INTmEUR": 75.4,
+    "interest_pct_gdp": 0.5701,
+    "realRate": -0.8249,
+    "OBpercentGDP": -0.5005,
+    "OBmEUR": -66.2,
+    "PBpercentGDP": 0.0696,
+    "piGDPdeflator": 5.5,
+    "PBmEUR": 9.2,
+    "rMinG": -12.4398,
+    "LVyield": 3.88,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2006",
+    "DEBT": 1736.5,
+    "dPercentageGDP": 10.6,
+    "GDPn": 16449.4,
+    "GDPr": 23008,
+    "gRate": 12.8252,
+    "effectiveRate": 4.8145,
+    "INTmEUR": 78.9,
+    "interest_pct_gdp": 0.4797,
+    "realRate": -4.887,
+    "OBpercentGDP": -0.5593,
+    "OBmEUR": -92,
+    "PBpercentGDP": -0.0796,
+    "piGDPdeflator": 10.2,
+    "PBmEUR": -13.1,
+    "rMinG": -17.7123,
+    "LVyield": 4.13,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2007",
+    "DEBT": 1935.1,
+    "dPercentageGDP": 8.9,
+    "GDPn": 21592.4,
+    "GDPr": 25404.2,
+    "gRate": 10.4146,
+    "effectiveRate": 4.9352,
+    "INTmEUR": 85.7,
+    "interest_pct_gdp": 0.3969,
+    "realRate": -11.745,
+    "OBpercentGDP": -0.5947,
+    "OBmEUR": -128.4,
+    "PBpercentGDP": -0.1978,
+    "piGDPdeflator": 18.9,
+    "PBmEUR": -42.7,
+    "rMinG": -22.1596,
+    "LVyield": 5.28,
+    "ECBrefinancingRate": 4.25
+  },
+  {
+    "time": "2008",
+    "DEBT": 4511.3,
+    "dPercentageGDP": 19.5,
+    "GDPn": 23355.3,
+    "GDPr": 24543.3,
+    "gRate": -3.3888,
+    "effectiveRate": 7.3019,
+    "INTmEUR": 141.3,
+    "interest_pct_gdp": 0.605,
+    "realRate": -4.1947,
+    "OBpercentGDP": -4.4714,
+    "OBmEUR": -1044.3,
+    "PBpercentGDP": -3.8664,
+    "piGDPdeflator": 12,
+    "PBmEUR": -903,
+    "rMinG": -0.8059,
+    "LVyield": 6.43,
+    "ECBrefinancingRate": 4.0301
+  },
+  {
+    "time": "2009",
+    "DEBT": 6957,
+    "dPercentageGDP": 38,
+    "GDPn": 18406.6,
+    "GDPr": 20606.5,
+    "gRate": -16.0402,
+    "effectiveRate": 6.4815,
+    "INTmEUR": 292.4,
+    "interest_pct_gdp": 1.5886,
+    "realRate": 13.3988,
+    "OBpercentGDP": -9.8144,
+    "OBmEUR": -1806.5,
+    "PBpercentGDP": -8.2259,
+    "piGDPdeflator": -6.1,
+    "PBmEUR": -1514.1,
+    "rMinG": 29.4391,
+    "LVyield": 12.36,
+    "ECBrefinancingRate": 1.2788
+  },
+  {
+    "time": "2010",
+    "DEBT": 8537.7,
+    "dPercentageGDP": 48.6,
+    "GDPn": 17572.2,
+    "GDPr": 19852.1,
+    "gRate": -3.661,
+    "effectiveRate": 4.5896,
+    "INTmEUR": 319.3,
+    "interest_pct_gdp": 1.8171,
+    "realRate": 5.5395,
+    "OBpercentGDP": -8.7946,
+    "OBmEUR": -1545.4,
+    "PBpercentGDP": -6.9775,
+    "piGDPdeflator": -0.9,
+    "PBmEUR": -1226.1,
+    "rMinG": 9.2005,
+    "LVyield": 10.34,
+    "ECBrefinancingRate": 1
+  },
+  {
+    "time": "2011",
+    "DEBT": 8948.5,
+    "dPercentageGDP": 46.6,
+    "GDPn": 19022.6,
+    "GDPr": 20454.9,
+    "gRate": 3.0365,
+    "effectiveRate": 4.1908,
+    "INTmEUR": 357.8,
+    "interest_pct_gdp": 1.8809,
+    "realRate": -0.8651,
+    "OBpercentGDP": -4.4694,
+    "OBmEUR": -850.2,
+    "PBpercentGDP": -2.5885,
+    "piGDPdeflator": 5.1,
+    "PBmEUR": -492.4,
+    "rMinG": -3.9015,
+    "LVyield": 5.91,
+    "ECBrefinancingRate": 1.2493
+  },
+  {
+    "time": "2012",
+    "DEBT": 9364.1,
+    "dPercentageGDP": 44,
+    "GDPn": 21270.9,
+    "GDPr": 21949.1,
+    "gRate": 7.3049,
+    "effectiveRate": 4.1459,
+    "INTmEUR": 371,
+    "interest_pct_gdp": 1.7442,
+    "realRate": -0.0519,
+    "OBpercentGDP": -1.4602,
+    "OBmEUR": -310.6,
+    "PBpercentGDP": 0.284,
+    "piGDPdeflator": 4.2,
+    "PBmEUR": 60.4,
+    "rMinG": -7.3567,
+    "LVyield": 4.57,
+    "ECBrefinancingRate": 0.8811
+  },
+  {
+    "time": "2013",
+    "DEBT": 9172,
+    "dPercentageGDP": 41.8,
+    "GDPn": 21997,
+    "GDPr": 22409.2,
+    "gRate": 2.0962,
+    "effectiveRate": 3.6886,
+    "INTmEUR": 345.4,
+    "interest_pct_gdp": 1.5702,
+    "realRate": 2.3579,
+    "OBpercentGDP": -1.2584,
+    "OBmEUR": -276.8,
+    "PBpercentGDP": 0.3119,
+    "piGDPdeflator": 1.3,
+    "PBmEUR": 68.6,
+    "rMinG": 0.2617,
+    "LVyield": 3.34,
+    "ECBrefinancingRate": 0.5534
+  },
+  {
+    "time": "2014",
+    "DEBT": 9817.9,
+    "dPercentageGDP": 43.1,
+    "GDPn": 22790.5,
+    "GDPr": 22878.7,
+    "gRate": 2.0951,
+    "effectiveRate": 3.5009,
+    "INTmEUR": 321.1,
+    "interest_pct_gdp": 1.4089,
+    "realRate": 1.9713,
+    "OBpercentGDP": -1.7011,
+    "OBmEUR": -387.7,
+    "PBpercentGDP": -0.2922,
+    "piGDPdeflator": 1.5,
+    "PBmEUR": -66.6,
+    "rMinG": -0.1238,
+    "LVyield": 2.51,
+    "ECBrefinancingRate": 0.1632
+  },
+  {
+    "time": "2015",
+    "DEBT": 9089.1,
+    "dPercentageGDP": 38.3,
+    "GDPn": 23744.3,
+    "GDPr": 23744.3,
+    "gRate": 3.7834,
+    "effectiveRate": 3.1697,
+    "INTmEUR": 311.2,
+    "interest_pct_gdp": 1.3106,
+    "realRate": 2.7587,
+    "OBpercentGDP": -1.5216,
+    "OBmEUR": -361.3,
+    "PBpercentGDP": -0.211,
+    "piGDPdeflator": 0.4,
+    "PBmEUR": -50.1,
+    "rMinG": -1.0247,
+    "LVyield": 0.96,
+    "ECBrefinancingRate": 0.05
+  },
+  {
+    "time": "2016",
+    "DEBT": 10224.1,
+    "dPercentageGDP": 41.7,
+    "GDPn": 24498.2,
+    "GDPr": 24350.1,
+    "gRate": 2.5513,
+    "effectiveRate": 3.0135,
+    "INTmEUR": 273.9,
+    "interest_pct_gdp": 1.118,
+    "realRate": 2.3991,
+    "OBpercentGDP": -0.0139,
+    "OBmEUR": -3.4,
+    "PBpercentGDP": 1.1042,
+    "piGDPdeflator": 0.6,
+    "PBmEUR": 270.5,
+    "rMinG": -0.1522,
+    "LVyield": 0.53,
+    "ECBrefinancingRate": 0.0102
+  },
+  {
+    "time": "2017",
+    "DEBT": 10492.6,
+    "dPercentageGDP": 40.3,
+    "GDPn": 26017.1,
+    "GDPr": 25177.8,
+    "gRate": 3.3992,
+    "effectiveRate": 2.586,
+    "INTmEUR": 264.4,
+    "interest_pct_gdp": 1.0163,
+    "realRate": -0.111,
+    "OBpercentGDP": -0.2983,
+    "OBmEUR": -77.6,
+    "PBpercentGDP": 0.718,
+    "piGDPdeflator": 2.7,
+    "PBmEUR": 186.8,
+    "rMinG": -3.5101,
+    "LVyield": 0.83,
+    "ECBrefinancingRate": 0
+  },
+  {
+    "time": "2018",
+    "DEBT": 10784,
+    "dPercentageGDP": 38.3,
+    "GDPn": 28153.4,
+    "GDPr": 26262.9,
+    "gRate": 4.3097,
+    "effectiveRate": 2.152,
+    "INTmEUR": 225.8,
+    "interest_pct_gdp": 0.802,
+    "realRate": -1.4928,
+    "OBpercentGDP": -1.3561,
+    "OBmEUR": -381.8,
+    "PBpercentGDP": -0.5541,
+    "piGDPdeflator": 3.7,
+    "PBmEUR": -156,
+    "rMinG": -5.8025,
+    "LVyield": 0.9,
+    "ECBrefinancingRate": 0
+  },
+  {
+    "time": "2019",
+    "DEBT": 11209.1,
+    "dPercentageGDP": 37.9,
+    "GDPn": 29567,
+    "GDPr": 26440.3,
+    "gRate": 0.6755,
+    "effectiveRate": 2.0679,
+    "INTmEUR": 223,
+    "interest_pct_gdp": 0.7542,
+    "realRate": -2.1401,
+    "OBpercentGDP": -0.1552,
+    "OBmEUR": -45.9,
+    "PBpercentGDP": 0.599,
+    "piGDPdeflator": 4.3,
+    "PBmEUR": 177.1,
+    "rMinG": -2.8156,
+    "LVyield": 0.34,
+    "ECBrefinancingRate": 0
+  },
+  {
+    "time": "2020",
+    "DEBT": 12869.5,
+    "dPercentageGDP": 44,
+    "GDPn": 29224.3,
+    "GDPr": 25523,
+    "gRate": -3.4693,
+    "effectiveRate": 1.8895,
+    "INTmEUR": 211.8,
+    "interest_pct_gdp": 0.7247,
+    "realRate": -0.4985,
+    "OBpercentGDP": -4.0874,
+    "OBmEUR": -1194.5,
+    "PBpercentGDP": -3.3626,
+    "piGDPdeflator": 2.4,
+    "PBmEUR": -982.7,
+    "rMinG": 2.9708,
+    "LVyield": -0.06,
+    "ECBrefinancingRate": 0
+  },
+  {
+    "time": "2021",
+    "DEBT": 14809.8,
+    "dPercentageGDP": 45.9,
+    "GDPn": 32283.8,
+    "GDPr": 27294.9,
+    "gRate": 6.9424,
+    "effectiveRate": 1.3614,
+    "INTmEUR": 175.2,
+    "interest_pct_gdp": 0.5427,
+    "realRate": -1.8767,
+    "OBpercentGDP": -7.2203,
+    "OBmEUR": -2331,
+    "PBpercentGDP": -6.6777,
+    "piGDPdeflator": 3.3,
+    "PBmEUR": -2155.8,
+    "rMinG": -8.8191,
+    "LVyield": 0,
+    "ECBrefinancingRate": 0
+  },
+  {
+    "time": "2022",
+    "DEBT": 16038.9,
+    "dPercentageGDP": 44.4,
+    "GDPn": 36088.7,
+    "GDPr": 27815.9,
+    "gRate": 1.9088,
+    "effectiveRate": 1.237,
+    "INTmEUR": 183.2,
+    "interest_pct_gdp": 0.5076,
+    "realRate": -7.7147,
+    "OBpercentGDP": -4.8591,
+    "OBmEUR": -1753.6,
+    "PBpercentGDP": -4.3515,
+    "piGDPdeflator": 9.7,
+    "PBmEUR": -1570.4,
+    "rMinG": -9.6234,
+    "LVyield": 2.27,
+    "ECBrefinancingRate": 0.5788
+  },
+  {
+    "time": "2023",
+    "DEBT": 17578.5,
+    "dPercentageGDP": 44.4,
+    "GDPn": 39564.2,
+    "GDPr": 27553.9,
+    "gRate": -0.9419,
+    "effectiveRate": 1.7888,
+    "INTmEUR": 286.9,
+    "interest_pct_gdp": 0.7252,
+    "realRate": -8.0499,
+    "OBpercentGDP": -2.3615,
+    "OBmEUR": -934.3,
+    "PBpercentGDP": -1.6363,
+    "piGDPdeflator": 10.7,
+    "PBmEUR": -647.4,
+    "rMinG": -7.108,
+    "LVyield": 3.83,
+    "ECBrefinancingRate": 3.8075
+  },
+  {
+    "time": "2024",
+    "DEBT": 18801.5,
+    "dPercentageGDP": 46.6,
+    "GDPn": 40359.4,
+    "GDPr": 27541.2,
+    "gRate": -0.0461,
+    "effectiveRate": 2.5218,
+    "INTmEUR": 443.3,
+    "interest_pct_gdp": 1.0984,
+    "realRate": 0.4132,
+    "OBpercentGDP": -1.8135,
+    "OBmEUR": -731.9,
+    "PBpercentGDP": -0.7151,
+    "piGDPdeflator": 2.1,
+    "PBmEUR": -288.6,
+    "rMinG": 0.4592,
+    "LVyield": 3.29,
+    "ECBrefinancingRate": 4.1318
+  }
+];
+
+    // Elasticity and coefficient constants
+/*    const rateMidRunElasticity = 0.5;
+    const piMidRunElasticity = 0.75;
+    const PBmidRunElasticity = 0.9;*/
+    
+    const elastGDPtoRates = -2/2;//-0.48;
+    const elastGDPPB = -0.6;
+    const elastGDPinf = -0.68; // find in equation lags
+    const elastInflationToGDP = 0.592;
+    const elastInflationECB = -1/2;//-0.2;
+    //const elastECBInflation = 0.2;
+    
+    const EstimateIntercept = -0.2597;
+    const EstimateRate = 1.011;
+    //const EstimateDebt = 0.041;
+    const EstimateDebt = 0.0221;
+    const EstimateFactorLatvia = -1.2;//0.1485;
+    
+    
+
+    // Utility function: find last non-null value in dataset for a given key
+    function lastNonNull(arr, key) {
+      for (let i = arr.length - 1; i >= 0; i--) {
+        const v = arr[i][key];
+        if (v !== null && v !== undefined) return v;
+      }
+      return null;
+    }
+
+    /**
+     * Forecast function replicating the R code
+     * @param {Array} data - the dataset array
+     * @param {number} ltPotGrowthRate
+     * @param {number} ltInflationTarget
+     * @param {number} ltPrimaryBalance
+     * @param {number} ltECBrefinancing
+     * @param {number} stPrimaryBalance
+     * @param {number} stECBrefinancing
+     * @param {number} stLVpremium
+     * @param {number} stPotGrowthRate
+     * @param {number} stInflationTarget
+     * @param {number} startDateInflationShock
+     * @param {number} startDateGrowthShock
+     * @param {number} startDateRateShock
+     * @param {number} startDatePBshock
+     * @param {number} startDateLVpremiumShock
+     * @returns {Array} forecast data array with variables per year
+     */
+    function forecast(data, ltPotGrowthRate, ltInflationTarget, ltPrimaryBalance, ltECBrefinancing,
+                      stPrimaryBalance, stECBrefinancing, stPotGrowthRate, stInflationTarget, stLVpremium,
+                      startDateInflationShock, startDateGrowthShock, startDateRateShock, startDatePBshock, startDateLVpremiumShock) {
+
+
+      // Sequence of years from forecastStartYear to 2075
+      forecastStartYear = 2025;
+      const years = [];
+      for (let y = forecastStartYear; y <= 2075; y++) years.push(y);
+
+      // Filter data for the year prior to forecast start
+      const filtered = data.find(d => parseInt(d.time, 10) == forecastStartYear-1);
+
+      // Initialize forecast arrays
+      const forecast_refin = new Array(years.length).fill(null);
+      const forecast_LVpremium = new Array(years.length).fill(null);
+      const forecast_interest = new Array(years.length).fill(null);
+      const forecast_PBpercentGDP = new Array(years.length).fill(null);
+      const forecast_pb = new Array(years.length).fill(null);
+      
+      const forecast_GDPr = new Array(years.length).fill(null);
+      const forecast_GDPn = new Array(years.length).fill(null);
+      const forecast_gRate = new Array(years.length).fill(null);
+      const forecast_Pi = new Array(years.length).fill(null);
+      const forecast_INTmEUR = new Array(years.length).fill(null);
+      const forecast_OBmEUR = new Array(years.length).fill(null);
+      const forecast_DEBT = new Array(years.length).fill(null);
+      const forecast_effectiveRate = new Array(years.length).fill(null);
+      const forecast_realRate = new Array(years.length).fill(null);
+      const forecast_dPercentageGDP = new Array(years.length).fill(null);
+      const forecast_LVyield = new Array(years.length).fill(null);
+      const forecast_interest_pct_gdp = new Array(years.length).fill(null);
+      const forecast_OBpercentGDP = new Array(years.length).fill(null);
+      const forecast_PBmEUR = new Array(years.length).fill(null);
+      const forecast_rMinG = new Array(years.length).fill(null);
+      
+      const decomp_ecb = new Array(years.length).fill(null);
+      const decomp_ecb_infl = new Array(years.length).fill(null);
+      
+      const decomp_infl = new Array(years.length).fill(null);
+      const decomp_infl_ecb = new Array(years.length).fill(null);
+      const decomp_infl_gdp = new Array(years.length).fill(null);
+      
+      const decomp_gdp = new Array(years.length).fill(null);
+      const decomp_gdp_ecb = new Array(years.length).fill(null);
+      const decomp_gdp_pb = new Array(years.length).fill(null);
+      const decomp_gdp_inf = new Array(years.length).fill(null);
+      
+      const decomp_lv = new Array(years.length).fill(null);
+      const decomp_lv_ecb = new Array(years.length).fill(null);
+      const decomp_lv_dbt = new Array(years.length).fill(null);
+      const decomp_lv_ob = new Array(years.length).fill(null);
+      
+      const decomp_dbt_past = new Array(years.length).fill(null);
+      
+      const decomp_ob_gdp_past = new Array(years.length).fill(null);
+      const decomp_ob_int_past = new Array(years.length).fill(null);
+      
+      
+      for (let i = 0; i < years.length; i++) {
+        
+
+        
+        
+        const gdp_deviation = (forecast_gRate[i-1] ? forecast_gRate[i-1] : filtered.gRate) - ltPotGrowthRate;
+        let pb_deviation = (forecast_PBpercentGDP[i-1] ? forecast_PBpercentGDP[i-1] : filtered.PBpercentGDP) - ltPrimaryBalance;
+
+        
+        
+          // ECB rate
+/*          decomp_ecb_infl[i] = elastECBInflation * (
+            (forecast_Pi[i-1] ? forecast_Pi[i-1] : filtered.piGDPdeflator)
+            - ltInflationTarget);*/
+          
+          
+        if (years[i] >= shockIntervals.ecb[0] && years[i] <= shockIntervals.ecb[1] && stECBrefinancing != 0) {
+          
+          forecast_refin[i] = (forecast_refin[i-1] !=null ? forecast_refin[i-1] : lastNonNull(data, 'ECBrefinancingRate'))
+          + (years[i] == shockIntervals.ecb[0] ? stECBrefinancing - ((forecast_refin[i-1] ? forecast_refin[i-1] : lastNonNull(data, 'ECBrefinancingRate')) - ltECBrefinancing) : 
+          - ((forecast_refin[i-1] !=null ? forecast_refin[i-1] : lastNonNull(data, 'ECBrefinancingRate')) - ltECBrefinancing - stECBrefinancing)
+            )
+          /*+ decomp_ecb_infl[i];*/
+          
+          decomp_ecb[i] = stECBrefinancing;
+          
+        } else {
+           forecast_refin[i] = (forecast_refin[i-1] != null ? forecast_refin[i-1] : lastNonNull(data, 'ECBrefinancingRate')) - ((
+             (forecast_refin[i-1] !=null ? forecast_refin[i-1] : lastNonNull(data, 'ECBrefinancingRate'))
+             - ltECBrefinancing) 
+             /*- decomp_ecb_infl[i]*/
+             );
+           
+           decomp_ecb[i] = 0;
+        }
+
+        if (years[i]==2025){
+          forecast_refin[i] = forecast_refin[i]+0.5
+        }
+        
+        
+        
+
+          // PB % of GDP
+        if (years[i] >= shockIntervals.primary[0] && years[i] <= shockIntervals.primary[1] && stPrimaryBalance != 0) {
+
+          forecast_PBpercentGDP[i] = (forecast_PBpercentGDP[i-1] ??  filtered.PBpercentGDP)
+          + (years[i] == shockIntervals.primary[0] ? (stPrimaryBalance - pb_deviation) : 
+          - (pb_deviation - stPrimaryBalance));
+// xyz
+        } else  {
+          
+           forecast_PBpercentGDP[i] = (forecast_PBpercentGDP[i-1] != null ? forecast_PBpercentGDP[i-1] : filtered.PBpercentGDP) - pb_deviation;
+        } 
+        if (years[i] ==2025){
+            forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -0.78
+        } else if (years[i]==2026){
+            forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -1.2
+        } else if (years[i]==2027){
+          forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -1.77
+        } else if (years[i]==2028){
+          forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -1.44
+        } else if (years[i]==2029){
+          forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -1.25
+        } else if (years[i]==2030){
+          forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -1
+        } else if (years[i]==2031){
+          forecast_PBpercentGDP[i] = forecast_PBpercentGDP[i] -0.4
+        }
+
+           // inflation
+          decomp_infl_ecb[i] = elastInflationECB * (forecast_refin[i] - ltECBrefinancing);      
+          decomp_infl_gdp[i] = elastInflationToGDP * (forecast_gRate[i-1] ?? filtered.gRate );
+          
+        if (years[i] >= shockIntervals.inflation[0] && years[i] <= shockIntervals.inflation[1] && stInflationTarget != 0) {
+          
+          decomp_infl[i] = stInflationTarget;
+
+          forecast_Pi[i] = (forecast_Pi[i-1] != null ? forecast_Pi[i-1] : filtered.piGDPdeflator)
+          + (
+          - (
+            (forecast_Pi[i-1] != null ? forecast_Pi[i-1] : filtered.piGDPdeflator)
+            - ltInflationTarget)
+            )
+          + decomp_infl[i]
+          + decomp_infl_gdp[i]
+          + decomp_infl_ecb[i]
+
+        } else  {
+          decomp_infl[i] = decomp_infl[i-1] ? decomp_infl[i-1] * 0.3 : 0;
+          
+           forecast_Pi[i] = (forecast_Pi[i-1] ? forecast_Pi[i-1] : filtered.piGDPdeflator) - (
+             (
+             (forecast_Pi[i-1] ? forecast_Pi[i-1] : filtered.piGDPdeflator)- ltInflationTarget
+             )  - decomp_infl_gdp[i] - decomp_infl_ecb[i] - decomp_infl[i]);
+        }
+        // xyz
+        if (years[i]==2025){
+          forecast_Pi[i] = forecast_Pi[i]+2.98
+        } else if (years[i]==2026){
+          forecast_Pi[i] = forecast_Pi[i]+1.25
+        } else if (years[i]==2027){
+          forecast_Pi[i] = forecast_Pi[i]+0.641
+        } else if (years[i]==2028){
+          forecast_Pi[i] = forecast_Pi[i]+0.49
+        }
+
+
+          // LVyield
+        decomp_lv[i] = ((years[i] >= shockIntervals.LV[0] && years[i] <= shockIntervals.LV[1] && stLVpremium[i] != 0) ? stLVpremium : 0);
+        decomp_lv_ecb[i] = EstimateRate * forecast_refin[i];
+        decomp_lv_dbt[i] = EstimateDebt * (forecast_dPercentageGDP[i-1] ?? filtered.dPercentageGDP);
+        
+        decomp_lv_ob[i] = (decomp_lv_ob[i-1] ?? 0) +
+        ((
+          ((forecast_OBpercentGDP[i-1] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(1-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-2] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(2-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-3] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(3-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-4] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(4-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-5] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(5-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-6] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(6-i)).OBpercentGDP) > -5)
+        ) ? 0.2 : 0) +
+        ((
+          ((forecast_OBpercentGDP[i-1] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(1-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-2] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(2-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-3] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(3-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-4] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(4-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-5] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(5-i)).OBpercentGDP) < -5) &&
+          ((forecast_OBpercentGDP[i-6] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(6-i)).OBpercentGDP) < -5) 
+        ) ? 0.2 : 0);
+        
+
+        forecast_LVyield[i] = EstimateIntercept + EstimateFactorLatvia + decomp_lv[i] + decomp_lv_ecb[i] + decomp_lv_dbt[i] + decomp_lv_ob[i];  
+        /*forecast_LVyield[i] = (forecast_LVyield[i] > 100 ? 100 : forecast_LVyield[i])*/
+
+
+          // gGDPr
+          decomp_gdp[i] = (years[i] >= shockIntervals.growth[0] && years[i] <= shockIntervals.growth[1]) ?
+          stPotGrowthRate : (decomp_gdp[i-1] ? decomp_gdp[i-1] : 0) * 0.3;
+          decomp_gdp_ecb[i] = elastGDPtoRates * ((forecast_LVyield[i] ?? 1.8)-2.1)
+          // xyz
+          decomp_gdp_pb[i] = ((years[i] >= shockIntervals.primary[0] && years[i] <= shockIntervals.primary[1]) ?
+          ((forecast_PBpercentGDP[i] - ltPrimaryBalance)< 0 ? elastGDPPB : elastGDPPB*1.5)* (forecast_PBpercentGDP[i] - ltPrimaryBalance + 
+          (years[i]==2025 ? 0.78 : (years[i]==2026 ? 1.2 : (years[i]==2027 ? 1.77 : (years[i]==2028 ? 1.44 : (years[i]==2029 ? 1.25 : (years[i]==2030 ? 1 : (years[i]==2031 ? 0.4 : 0)))))))
+        ) : 0);//((decomp_gdp_pb[i-1] ?? 0) *0.3));
+          
+
+            decomp_gdp_inf[i] = elastGDPinf/2 * 
+            (forecast_Pi[i] >=0 ? (forecast_Pi[i] - ltInflationTarget) : (-forecast_Pi[i]+2)/1.5)
+            
+                                - 0.42/2 * 
+            ((forecast_Pi[i-1] ?? filtered.piGDPdeflator) >=0 ? ((forecast_Pi[i-1] ?? filtered.piGDPdeflator) - ltInflationTarget) : (-(forecast_Pi[i-1] ?? filtered.piGDPdeflator)+2)/1.5)
+            
+                                - 0.31/2 * 
+            ((forecast_Pi[i-2] ?? filtered.piGDPdeflator) >=0 ? ((forecast_Pi[i-2] ?? filtered.piGDPdeflator) - ltInflationTarget) : (-(forecast_Pi[i-2] ?? filtered.piGDPdeflator)+2)/1.5)
+            
+                                - 0.23/2 * 
+            ((forecast_Pi[i-3] ?? filtered.piGDPdeflator) >=0 ? ((forecast_Pi[i-3] ?? filtered.piGDPdeflator) - ltInflationTarget) : (-(forecast_Pi[i-3] ?? filtered.piGDPdeflator)+2)/1.5);
+            
+
+
+
+
+          forecast_gRate[i] = (forecast_gRate[i-1] != null ? forecast_gRate[i-1] : filtered.gRate)
+          - gdp_deviation + decomp_gdp[i] + decomp_gdp_ecb[i] + decomp_gdp_pb[i] + decomp_gdp_inf[i];
+// xyz
+          if (years[i]==2025){
+            forecast_gRate[i] = forecast_gRate[i] - 0.26
+          } else if (years[i]==2026){
+            forecast_gRate[i] = forecast_gRate[i] + 0.26
+          } else if (years[i]==2027){
+            forecast_gRate[i] = forecast_gRate[i] + 0.4
+          } else if (years[i]==2028){
+            forecast_gRate[i] = forecast_gRate[i] + 0.413
+          } else if (years[i]>2028){
+            forecast_gRate[i] = forecast_gRate[i] + 0.2
+          } 
+          
+          if ((forecast_GDPn[i-2] ?? filtered.GDPn) <= 0.0001){
+            
+            forecast_gRate[i] = 0;
+            decomp_gdp[i] = 0;
+            decomp_gdp_ecb[i] = 0;
+            decomp_gdp_pb[i] = 0;
+            decomp_gdp_inf[i] = 0;
+          }
+
+          forecast_GDPr[i] = (i==0 ? filtered.GDPr : ((forecast_GDPr[i-1] ? forecast_GDPr[i-1] : filtered.GDPr) * (1+forecast_gRate[i]/100)));
+          forecast_GDPr[i] = (forecast_GDPn[i-1] ?? filtered.GDPn) > 0.0001 ? forecast_GDPr[i] : 0.0001;
+
+        
+        
+          // GDPn
+        forecast_GDPn[i] = (forecast_GDPn[i-1] ? forecast_GDPn[i-1] : filtered.GDPn)
+        * (
+        (1+forecast_gRate[i]/100) < 0 && (1+forecast_Pi[i]/100) < 0 ? 
+        (-1) * (1+forecast_gRate[i]/100) * (1+forecast_Pi[i]/100) :
+        ((1+forecast_gRate[i]/100) * (1+forecast_Pi[i]/100))
+        );
+        
+        forecast_GDPn[i] = (forecast_GDPn[i] > 0 ? forecast_GDPn[i] : 0.0001);
+        forecast_GDPn[i] = (forecast_GDPn[i-1] ?? filtered.GDPn) > 0.0001 ? forecast_GDPn[i] : 0.0001;
+        forecast_GDPn[i] = (forecast_GDPr[i-1] ?? filtered.GDPr) > 0.0001 ? forecast_GDPn[i] : 0.0001;
+
+
+          // INTmEUR   
+        forecast_INTmEUR[i] = (forecast_INTmEUR[i-1] ? forecast_INTmEUR[i-1] : filtered.INTmEUR)
+        + ((forecast_OBmEUR[i-1] ? forecast_OBmEUR[i-1] : filtered.OBmEUR) < 0 ? 
+        -(forecast_OBmEUR[i-1] ? forecast_OBmEUR[i-1] : filtered.OBmEUR) : 0) 
+        * (forecast_LVyield[i-1] ? forecast_LVyield[i-1] : filtered.LVyield) / 100;
+          // refinancing step
+        forecast_INTmEUR[i] =  forecast_INTmEUR[i]
+          // no longer have to pay interest from debt added 10 years ago
+        - ( (forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR) < 0 ? 
+            -(forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR) : 0
+          ) * (forecast_LVyield[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).LVyield) / 100
+          // have to pay new interest on debt added 10 years ago
+        + ( (forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR) < 0 ? 
+            -(forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR) : 0
+          ) * (forecast_LVyield[i-1] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-1).LVyield) / 100;
+          
+       
+       
+       
+       if ( (forecast_OBmEUR[i-1] ? forecast_OBmEUR[i-1] : filtered.OBmEUR) < 0 ) {
+         
+        forecast_INTmEUR[i] = (forecast_INTmEUR[i-1] ? forecast_INTmEUR[i-1] : filtered.INTmEUR)
+        -(forecast_OBmEUR[i-1] ? forecast_OBmEUR[i-1] : filtered.OBmEUR)
+        * (forecast_LVyield[i-1] ? forecast_LVyield[i-1] : filtered.LVyield) / 100;
+          // refinancing step
+        forecast_INTmEUR[i] =  forecast_INTmEUR[i]
+          // no longer have to pay interest from debt added 10 years ago
+        - (
+          -(forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR)
+          ) * (forecast_LVyield[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).LVyield) / 100
+          // have to pay new interest on debt added 10 years ago
+        + ( 
+          -(forecast_OBmEUR[i-10] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-(10-i)).OBmEUR)
+          ) * (forecast_LVyield[i-1] ?? data.find(d => parseInt(d.time, 10) == forecastStartYear-1).LVyield) / 100;
+         
+       } else {
+         
+         forecast_INTmEUR[i] = (forecast_INTmEUR[i-1] ? forecast_INTmEUR[i-1] : filtered.INTmEUR)
+        -(forecast_OBmEUR[i-1] ? forecast_OBmEUR[i-1] : filtered.OBmEUR)
+        * (forecast_effectiveRate[i-1] ? forecast_effectiveRate[i-1] : filtered.forecast_effectiveRate) / 100;
+       }
+        
+      forecast_INTmEUR[i] = (forecast_INTmEUR[i] > 0 ? forecast_INTmEUR[i] : 0.00001);
+
+
+          // OBmEUR
+        forecast_OBmEUR[i] = (forecast_PBpercentGDP[i]/100 * forecast_GDPn[i] - forecast_INTmEUR[i]);
+
+
+
+          // DEBT
+        forecast_DEBT[i] = (forecast_DEBT[i-1] != null ? forecast_DEBT[i-1] : filtered.DEBT) -forecast_OBmEUR[i];
+        forecast_DEBT[i] = forecast_DEBT[i] > 0 ? forecast_DEBT[i] : 0.001;
+
+
+
+          // effectiveRate
+        forecast_effectiveRate[i] = (forecast_INTmEUR[i] / 
+        (forecast_DEBT[i-1] ? forecast_DEBT[i-1] : filtered.DEBT)
+        ) * 100;
+
+
+
+          // realRate
+        forecast_realRate[i] = ((1+forecast_effectiveRate[i]/100) / (1+forecast_Pi[i]/100) - 1) * 100;
+
+
+
+          // dPercentageGDP
+        forecast_dPercentageGDP[i] = forecast_DEBT[i] / forecast_GDPn[i] * 100;
+        decomp_dbt_past[i] = forecast_dPercentageGDP[i-1] ?? filtered.dPercentageGDP;
+        
+        
+        
+
+
+        
+        
+        
+
+          // interest_pct_gdp
+        forecast_interest_pct_gdp[i] = forecast_INTmEUR[i] / forecast_GDPn[i] * 100;
+
+
+
+          // OBpercentGDP
+        forecast_OBpercentGDP[i] = forecast_OBmEUR[i] / forecast_GDPn[i] * 100;
+        decomp_ob_gdp_past[i] = forecast_GDPn[i-1] ?? filtered.GDPn;
+        decomp_ob_int_past[i] = forecast_interest_pct_gdp[-1] ?? filtered.interest_pct_gdp;
+
+
+
+          // PBmEUR
+        forecast_PBmEUR[i] = forecast_OBmEUR[i] + forecast_INTmEUR[i];
+
+
+
+          // rMinG
+        forecast_rMinG[i] = forecast_realRate[i] - forecast_gRate[i];
+        
+        
+        
+      }
+      
+
+      
+      
+      
+      
+
+      // Build forecast data array
+      
+      const results = [];
+      for (let i = 0; i < years.length; i++) {
+        results.push({
+          time: years[i].toString(),
+          ECBrefinancingRate: forecast_refin[i],
+          
+          decomp_ecb: decomp_ecb[i],
+          decomp_ecb_infl: decomp_ecb_infl[i],
+          
+          decomp_infl: decomp_infl[i],
+          decomp_infl_ecb: decomp_infl_ecb[i],
+          decomp_infl_gdp: decomp_infl_gdp[i],
+          
+          decomp_gdp: decomp_gdp[i],
+          decomp_gdp_ecb: decomp_gdp_ecb[i],
+          decomp_gdp_pb: decomp_gdp_pb[i],
+          decomp_gdp_inf: decomp_gdp_inf[i],
+          
+          decomp_lv: decomp_lv[i],
+          decomp_lv_ecb: decomp_lv_ecb[i],
+          decomp_lv_dbt: decomp_lv_dbt[i],
+          decomp_lv_ob: decomp_lv_ob[i],
+          
+          decomp_dbt_past: decomp_dbt_past[i], 
+          
+          decomp_ob_gdp_past: decomp_ob_gdp_past[i],
+          decomp_ob_int_past: decomp_ob_int_past[i],
+          
+
+          
+
+      
+          // Shift all other variables back one spot
+          interest: forecast_interest[i],
+          PBpercentGDP: forecast_PBpercentGDP[i],
+          pb: forecast_pb[i],
+          GDPr: forecast_GDPr[i],
+          GDPn: forecast_GDPn[i],
+          gRate: forecast_gRate[i],
+          piGDPdeflator: forecast_Pi[i],
+          INTmEUR: forecast_INTmEUR[i],
+          OBmEUR: forecast_OBmEUR[i],
+          DEBT: forecast_DEBT[i],
+          effectiveRate: forecast_effectiveRate[i],
+          realRate: forecast_realRate[i],
+          dPercentageGDP: forecast_dPercentageGDP[i],
+          LVyield: forecast_LVyield[i],
+          interest_pct_gdp: forecast_interest_pct_gdp[i],
+          OBpercentGDP: forecast_OBpercentGDP[i],
+          PBmEUR: forecast_PBmEUR[i],
+          rMinG: forecast_rMinG[i]
+        });
+      }
+
+      return data.concat(results);
+    }
+
+    // Compute baseline forecast once on page load (no shocks, baseline parameters)
+    const baselineParams = {
+      ltPotGrowthRate: 2.4 +0.6,
+      ltInflationTarget: 2.0 -1.4,
+      ltPrimaryBalance: -1,
+      ltECBrefinancing: 2,
+      stPrimaryBalance: 0,
+      stECBrefinancing: 0,
+      stLVpremium: 0,
+      stPotGrowthRate: 0,
+      stInflationTarget: 0,
+      startDateInflationShock: new Date().getFullYear(),
+      startDateGrowthShock: new Date().getFullYear(),
+      startDateRateShock: new Date().getFullYear(),
+      startDateLVpremiumShock: new Date().getFullYear(),
+      startDatePBshock: new Date().getFullYear()
+    };
+    const Baseline = forecast(
+      DataSet,
+      baselineParams.ltPotGrowthRate,
+      baselineParams.ltInflationTarget,
+      baselineParams.ltPrimaryBalance,
+      baselineParams.ltECBrefinancing,
+      baselineParams.stPrimaryBalance,
+      baselineParams.stECBrefinancing,
+      baselineParams.stLVpremium,
+      baselineParams.stPotGrowthRate,
+      baselineParams.stInflationTarget,
+      baselineParams.startDateInflationShock,
+      baselineParams.startDateGrowthShock,
+      baselineParams.startDateRateShock,
+      baselineParams.startDateLVpremiumShock,
+      baselineParams.startDatePBshock
+    );
+
+    // Convert baseline array to dictionary keyed by time for quick lookup
+    const baselineDict = {};
+    Baseline.forEach(row => {
+      baselineDict[row.time] = row;
+    });
+
+
+    /**
+     * Computes combined data for baseline and shock and updates diff values
+     * @param {Object} currentInputs - current user inputs
+     */
+    function computeCombinedData(currentInputs) {
+      // Forecast with current inputs (shock scenario)
+      const shock = forecast(
+        DataSet,
+        currentInputs.ltPotGrowthRate,
+        currentInputs.ltInflationTarget,
+        currentInputs.ltPrimaryBalance,
+        currentInputs.ltECBrefinancing,
+        currentInputs.stPrimaryBalance,
+        currentInputs.stECBrefinancing,
+        currentInputs.stPotGrowthRate,
+        currentInputs.stInflationTarget,
+        currentInputs.stLVpremium,
+        currentInputs.startDateInflationShock,
+        currentInputs.startDateGrowthShock,
+        currentInputs.startDateRateShock,
+        currentInputs.startDatePBshock,
+        currentInputs.startDateLVpremiumShock
+      );
+      // Build dictionary for shock keyed by time
+      const shockDict = {};
+      shock.forEach(row => { shockDict[row.time] = row; });
+      // Decomposition diffs
+      /*const decomp = decomposition(currentInputs);*/
+      // Combined data list sorted by time (unique times from baseline and shock)
+      const times = Object.keys(baselineDict).concat(Object.keys(shockDict)).filter((value, index, self) => self.indexOf(value) === index).sort();
+      const combined = [];
+      times.forEach(t => {
+        const base = baselineDict[t] || {};
+        const sh = shockDict[t] || {};
+        combined.push({
+          time: t,
+          // baseline values
+          dPercentageGDP: base.dPercentageGDP !== undefined ? base.dPercentageGDP : null,
+          OBpercentGDP: base.OBpercentGDP !== undefined ? base.OBpercentGDP : null,
+          PBpercentGDP: base.PBpercentGDP !== undefined ? base.PBpercentGDP : null,
+          DEBT: base.DEBT !== undefined ? base.DEBT : null,
+          GDPr: base.GDPr !== undefined ? base.GDPr : null,
+          GDPn: base.GDPn !== undefined ? base.GDPn : null,
+          gRate: base.gRate !== undefined ? base.gRate : null,
+          OBmEUR: base.OBmEUR !== undefined ? base.OBmEUR : null,
+          PBmEUR: base.PBmEUR !== undefined ? base.PBmEUR : null,
+          LVyield: base.LVyield !== undefined ? base.LVyield : null,
+          ECBrefinancingRate: base.ECBrefinancingRate !== undefined ? base.ECBrefinancingRate : null,
+          LVpremium: base.LVpremium !== undefined ? base.LVpremium : null,
+          piGDPdeflator: base.piGDPdeflator !== undefined ? base.piGDPdeflator : null,
+          rMinG: base.rMinG !== undefined ? base.rMinG : null,
+          INTmEUR: base.INTmEUR !== undefined ? base.INTmEUR : null,
+          interest_pct_gdp: base.interest_pct_gdp !== undefined ? base.interest_pct_gdp : null,
+          effectiveRate: base.effectiveRate !== undefined ? base.effectiveRate : null,
+          realRate: base.realRate !== undefined ? base.realRate : null,
+          // shock values with .1 suffix
+          dPercentageGDP_1: sh.dPercentageGDP !== undefined ? sh.dPercentageGDP : null,
+          OBpercentGDP_1: sh.OBpercentGDP !== undefined ? sh.OBpercentGDP : null,
+          PBpercentGDP_1: sh.PBpercentGDP !== undefined ? sh.PBpercentGDP : null,
+          DEBT_1: sh.DEBT !== undefined ? sh.DEBT : null,
+          GDPr_1: sh.GDPr !== undefined ? sh.GDPr : null,
+          GDPn_1: sh.GDPn !== undefined ? sh.GDPn : null,
+          gRate_1: sh.gRate !== undefined ? sh.gRate : null,
+          OBmEUR_1: sh.OBmEUR !== undefined ? sh.OBmEUR : null,
+          PBmEUR_1: sh.PBmEUR !== undefined ? sh.PBmEUR : null,
+          LVyield_1: sh.LVyield !== undefined ? sh.LVyield : null,
+          ECBrefinancingRate_1: sh.ECBrefinancingRate !== undefined ? sh.ECBrefinancingRate : null,
+          LVpremium_1: base.LVpremium_1 !== undefined ? base.LVpremium_1 : null,
+          piGDPdeflator_1: sh.piGDPdeflator !== undefined ? sh.piGDPdeflator : null,
+          rMinG_1: sh.rMinG !== undefined ? sh.rMinG : null,
+          INTmEUR_1: sh.INTmEUR !== undefined ? sh.INTmEUR : null,
+          interest_pct_gdp_1: sh.interest_pct_gdp !== undefined ? sh.interest_pct_gdp : null,
+          effectiveRate_1: sh.effectiveRate !== undefined ? sh.effectiveRate : null,
+          realRate_1: sh.realRate !== undefined ? sh.realRate : null,
+          
+          
+          
+          decomp_ecb: base.decomp_ecb,
+          decomp_ecb_1: sh.decomp_ecb,
+          decomp_ecb_infl: base.decomp_ecb_infl,
+          decomp_ecb_infl_1: sh.decomp_ecb_infl,
+          
+          decomp_infl: base.decomp_infl,
+          decomp_infl_1: sh.decomp_infl,
+          decomp_infl_ecb: base.decomp_infl_ecb,
+          decomp_infl_ecb_1: sh.decomp_infl_ecb,
+          decomp_infl_gdp: base.decomp_infl_gdp,
+          decomp_infl_gdp_1: sh.decomp_infl_gdp,
+          
+          decomp_gdp: base.decomp_gdp,
+          decomp_gdp_1: sh.decomp_gdp,
+          decomp_gdp_ecb: base.decomp_gdp_ecb,
+          decomp_gdp_ecb_1: sh.decomp_gdp_ecb,
+          decomp_gdp_pb: base.decomp_gdp_pb,
+          decomp_gdp_pb_1: sh.decomp_gdp_pb,
+          decomp_gdp_inf: base.decomp_gdp_inf,
+          decomp_gdp_inf_1: sh.decomp_gdp_inf,
+          
+          decomp_lv: base.decomp_lv,
+          decomp_lv_1: sh.decomp_lv,
+          decomp_lv_ecb: base.decomp_lv_ecb,
+          decomp_lv_ecb_1: sh.decomp_lv_ecb,
+          decomp_lv_dbt: base.decomp_lv_dbt,
+          decomp_lv_dbt_1: sh.decomp_lv_dbt,
+          decomp_lv_ob: base.decomp_lv_ob,
+          decomp_lv_ob_1: sh.decomp_lv_ob,
+          
+          decomp_dbt_past: base.decomp_dbt_past,
+          decomp_dbt_past_1: sh.decomp_dbt_past,
+          
+          decomp_ob_gdp_past: base.decomp_ob_gdp_past,
+          decomp_ob_gdp_past_1: sh.decomp_ob_gdp_past,
+          decomp_ob_int_past: base.decomp_ob_int_past,
+          decomp_ob_int_past_1: sh.decomp_ob_int_past
+
+        });
+      });
+      return combined;
+    }
+
+    // Event listeners for controls
+    const inputs = [
+      'ltPotGrowthRate', 'ltInflationTarget', 'ltPrimaryBalance', 'ltECBrefinancing',
+      'stPrimaryBalance', 'stECBrefinancing', 'stPotGrowthRate', 'stInflationTarget', 'stLVpremium',
+      'startDateInflationShock', 'startDateGrowthShock', 'startDateRateShock', 'startDatePBshock'
+    ];
+    const currentInputs = {
+      ltPotGrowthRate: 2.4 +0.6,
+      ltInflationTarget: 2.0 -1.4,
+      ltPrimaryBalance: -1,
+      ltECBrefinancing: 2,
+      
+      stPrimaryBalance: 0,
+      stECBrefinancing: 0,
+      stPotGrowthRate: 0,
+      stInflationTarget: 0,
+      stLVpremium: 0,
+      
+      startDateInflationShock: 2025,
+      startDateGrowthShock: 2025,
+      startDateRateShock: 2025,
+      startDatePBshock: 2025,
+      startDateLVpremiumShock : 2025
+    };
+
+    inputs.forEach(id => {
+      const elem = document.getElementById(id);
+      const valSpan = document.getElementById(id + '_val');
+      if (!elem) return;
+      // Update UI text and internal state
+      const updateValue = () => {
+        let value;
+        if (elem.type === 'range') {
+          value = parseFloat(elem.value);
+        } else {
+          value = elem.value;
+        }
+        // For start date controls convert to integer
+        if (id.startsWith('startDate')) {
+          currentInputs[id] = parseInt(value, 10);
+        } else {
+          currentInputs[id] = parseFloat(value);
+        }
+        if (valSpan) valSpan.textContent = value;
+        // Recompute and redraw graphs
+        redraw();
+      };
+      elem.addEventListener('input', updateValue);
+    });
+
+    // Toggle overlay visibility
+    const overlayPanel = document.getElementById('overlayPanel');
+    document.getElementById('toggleOverlay').addEventListener('click', () => {
+      if (overlayPanel.style.display === 'none' || overlayPanel.style.display === '') {
+        overlayPanel.style.display = 'block';
+      } else {
+        overlayPanel.style.display = 'none';
+      }
+    });
+
+    // Reset button resets sliders to baseline values
+    document.getElementById('reset').addEventListener('click', () => {
+      // Baseline values
+      const baselineValues = {
+      ltPotGrowthRate: 2.4 +0.6,
+      ltInflationTarget: 2.0 -1.4,
+        ltPrimaryBalance: -1,
+        ltECBrefinancing: 2,
+        stPrimaryBalance: 0,
+        stECBrefinancing: 0,
+        stLVpremium: 0,
+        stPotGrowthRate: 0,
+        stInflationTarget: 0
+      };
+      inputs.forEach(id => {
+        const elem = document.getElementById(id);
+        const valSpan = document.getElementById(id + '_val');
+        if (elem) {
+          elem.value = baselineValues[id];
+          if (valSpan) valSpan.textContent = baselineValues[id];
+        }
+        currentInputs[id] = baselineValues[id];
+      });
+      // laggy af
+/*      inflationSlider.noUiSlider.set([2025, 2030]);
+      growthSlider.noUiSlider.set([2025, 2030]);
+      ecbSlider.noUiSlider.set([2025, 2030]);
+      LVSlider.noUiSlider.set([2025, 2030]);
+      primarySlider.noUiSlider.set([2025, 2030]);
+      
+      shockIntervals.inflation = [2025, 2030];
+      shockIntervals.growth = [2025, 2030];
+      shockIntervals.ecb = [2025, 2030];
+      shockIntervals.LV = [2025, 2030];
+      shockIntervals.primary = [2025, 2030];*/
+      
+
+      
+      redraw();
+    });
+    
+    document.getElementById('showGraphChooser').addEventListener('click', () => {
+      const panel = document.getElementById('graphChooserPanel');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    const checkboxes = document.querySelectorAll('#graphChooserPanel input[type="checkbox"]');
+    
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        const graphDiv = document.getElementById(cb.id.replace('_checkbox', ''));
+        if (!graphDiv) return;
+        
+        graphDiv.style.display = cb.checked ? 'block' : 'none';
+        
+        if (cb.checked) {
+          requestAnimationFrame(() => {
+          
+            try { Plotly.Plots.resize(graphDiv); } catch (e) {}
+            
+          });
+        }
+      });
+    });
+    
+
+
+    // Function to redraw all graphs based on current inputs
+    function redraw() {
+      const combinedData = computeCombinedData(currentInputs);
+      // Extract arrays for x and y values
+      const times = combinedData.map(row => row.time);
+      // dPercentageGDP
+      const dShock = combinedData.map(row => row.dPercentageGDP_1);
+      const dBase = combinedData.map(row => row.dPercentageGDP);
+      
+
+
+      
+      
+let sum_1 = 0;
+let sum_2 = 0;
+let sum_3 = 0;
+let sum_4 = 0;
+
+const cum = combinedData.map(row => {
+
+
+  sum_1 = sum_1 / (1 + row.gRate_1 / 100) / (1 + row.piGDPdeflator_1 / 100)
+    + -(row.PBpercentGDP_1 - row.PBpercentGDP);
+
+
+  sum_2 = sum_2 / (1 + row.gRate_1 / 100) / (1 + row.piGDPdeflator_1 / 100)
+    + (row.effectiveRate_1 - row.effectiveRate) / 100 * (row.decomp_dbt_past_1 ?? 0);
+    
+  sum_3 = sum_3 / (1+row.gRate_1/100) / (1+row.piGDPdeflator_1/100)
+        + ( 1/(1+(row.gRate_1)/100) - 1/(1+(row.gRate)/100) ) * (row.decomp_dbt_past_1 ?? 0);
+        
+  sum_4 = sum_4 / (1+row.gRate_1/100) / (1+row.piGDPdeflator_1/100)
+        + ( 1/(1+(row.piGDPdeflator_1)/100) - 1/(1+(row.piGDPdeflator)/100) ) * (row.decomp_dbt_past_1 ?? 0);
+        
+  
+  const approx_error = (row.dPercentageGDP_1-row.dPercentageGDP) - (sum_1 ?? 0) - (sum_2 ?? 0) - (sum_3 ?? 0) -  (sum_4 ?? 0);
+  if (row.DEBT_1 != 0.001 && (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0){
+    scale_1 = 0;
+    scale_2 =( Math.abs(sum_2) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+    scale_3 =( Math.abs(sum_3) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+    scale_4 =( Math.abs(sum_4) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+  } else if ((Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0) {
+    scale_1 = Math.abs(sum_1) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+    scale_2 = Math.abs(sum_2) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+    scale_3 = Math.abs(sum_3) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+    scale_4 = Math.abs(sum_4) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+  } else {
+    scale_1 = 0;
+    scale_2 = 0;
+    scale_3 = 0;
+    scale_4 = 0;
+  }
+  sum_1 = sum_1 + approx_error * scale_1;
+  sum_2 = sum_2 + approx_error * scale_2;
+  sum_3 = sum_3 + approx_error * scale_3;
+  sum_4 = sum_4 + approx_error * scale_4;
+
+
+  
+  return {
+    cum_dbt_pb: sum_1,
+    cum_dbt_ner: sum_2,
+    cum_dbt_g: sum_3,
+    cum_dbt_inf: sum_4
+  };
+});
+
+cum_dbt_pb = cum.map(row => row.cum_dbt_pb)
+cum_dbt_ner = cum.map(row => row.cum_dbt_ner)
+cum_dbt_g = cum.map(row => row.cum_dbt_g)
+cum_dbt_inf = cum.map(row => row.cum_dbt_inf)
+
+y_axis = dShock.every(i => i < 300)
+      
+
+      Plotly.react('graph_dPercentageGDP', [
+        { x: times, y: dShock, type: 'scatter', mode: 'lines', name: 'Šoki'},
+        { x: times, y: dBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs'},
+        
+        { x: times, y: cum_dbt_pb, type: 'bar', marker: {opacity: 1, color:'#CBAC88'}, name:'Primārā bilance', showlegend: false,
+          hovertemplate: 'Primārā bilance: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}},
+        { x: times, y: cum_dbt_ner, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name:'Nominālā efektīvā likme', showlegend: false,
+          hovertemplate: 'Nominālā efektīvā likme: %{y}<extra></extra>'},
+        { x: times, y: cum_dbt_g, type: 'bar', marker: {opacity: 1, color: '#2878A1'}, name:'Reālā IKP pieauguma temps', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'},
+        { x: times, y: cum_dbt_inf, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name:'Inflācija', showlegend: false, showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Parāds (% no IKP)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, nticks: 5, visible:y_axis},
+        xaxis: { title: null, showgrid: false},
+        barmode: 'relative',
+        
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],
+        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.15,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Parāds veidojas, kad valsts ienākumi </b>(galvenokārt<br>nodokļu ieņēmumi) <b>ir zemāki par izmaksām, ko veido<br>sabiedriskā labuma preces un procentu maksājumi<br>par iepriekš uzkrāto parādu.<br> <br>Parādu var izmantot ieguldījumiem infrastruktūrā,<br>kuri paaugstinās ekonomisko izaugsmi. Taču, ja<br>parāda attiecība pret nominālo IKP pieaugs, ārējiem<br>investoriem radīsies bažas par valsts maksātspēju,<br>un tas atspoguļosies turpmāko aizņēmumu augstākā <br>procentu likmē.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+
+        
+        
+        
+      }, PLOT_CFG
+            
+      
+      );
+      
+
+        
+      
+      
+      
+      // OBpercentGDP
+      const obShock = combinedData.map(row => row.OBpercentGDP_1);
+      const obBase = combinedData.map(row => row.OBpercentGDP);
+      
+      const decomp_ob_pb = combinedData.map(row => (row.PBpercentGDP_1-row.PBpercentGDP));
+      
+let sum_ob_1 = 0;
+let sum_ob_2 = 0;
+let sum_ob_3 = 0;
+let sum_ob_4 = 0;
+
+const cum_ob = combinedData.map(row => {
+  
+  if (row.decomp_ob_gdp_past_1){
+       decomp_ob_int_total = -(row.interest_pct_gdp_1-row.interest_pct_gdp);
+        
+        sum_ob_1 = -(row.INTmEUR_1 - row.INTmEUR) / (row.decomp_ob_gdp_past_1 * (1+row.gRate/100) * (1+row.piGDPdeflator/100)) * 100;
+        
+        sum_ob_2 = sum_ob_2-(
+        row.INTmEUR_1 / (row.decomp_ob_gdp_past_1 * (1+row.gRate_1/100) * (1+row.piGDPdeflator/100))
+        -row.INTmEUR_1 / (row.decomp_ob_gdp_past_1 * (1+row.gRate/100) * (1+row.piGDPdeflator/100))
+        )*100;
+        
+        sum_ob_3 = sum_ob_3-(
+        row.INTmEUR_1 / (row.decomp_ob_gdp_past_1 * (1+row.gRate/100) * (1+row.piGDPdeflator_1/100))
+        -row.INTmEUR_1 / (row.decomp_ob_gdp_past_1 * (1+row.gRate/100) * (1+row.piGDPdeflator/100))
+        )*100;
+        
+/*        sum_ob_1 = sum_ob_1 // (1 + row.gRate_1 / 100) / (1 + row.piGDPdeflator_1 / 100)
+        + (row.effectiveRate_1 - row.effectiveRate) / 100 * (row.decomp_ob_int_past_1 / row.decomp_ob_gdp_past_1 ?? 0);
+    
+        sum_ob_2 = sum_ob_2 // (1+row.gRate_1/100) / (1+row.piGDPdeflator_1/100)
+        + ( 1/(1+(row.gRate_1)/100) - 1/(1+(row.gRate)/100) ) * (row.decomp_ob_int_past_1 / row.decomp_ob_gdp_past_1 ?? 0);
+        
+        sum_ob_3 = sum_ob_3 // (1+row.gRate_1/100) / (1+row.piGDPdeflator_1/100)
+        + ( 1/(1+(row.piGDPdeflator_1_1)/100) - 1/(1+(row.piGDPdeflator)/100) ) * (row.decomp_ob_int_past_1 / row.decomp_ob_gdp_past_1 ?? 0);*/
+        
+        
+        
+        sum_ob_4 = decomp_ob_int_total - sum_ob_1-sum_ob_2-sum_ob_3;
+        
+    if (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3) !=0){
+        
+    scale_1 = Math.abs(sum_ob_1) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+    scale_2 = Math.abs(sum_ob_2) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+    scale_3 = Math.abs(sum_ob_3) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+    
+      sum_ob_1 = sum_ob_1 + sum_ob_4 * scale_1;
+      if(row.decomp_ob_gdp_past_1 > 0.0001){
+        sum_ob_2 = sum_ob_2 + sum_ob_4 * scale_2;
+        sum_ob_3 = sum_ob_3 + sum_ob_4 * scale_3;
+      } else{
+        sum_ob_2 = 0;
+        sum_ob_3 = 0;
+      }
+    }
+        
+        
+  }
+
+  
+
+  
+  return {
+    cum_ob_int: sum_ob_1,
+    cum_ob_gdp: sum_ob_2,
+    cum_ob_inf: sum_ob_3
+  };
+});
+
+decomp_ob_gdp = cum_ob.map(row => row.cum_ob_gdp)
+decomp_ob_inf = cum_ob.map(row => row.cum_ob_inf)
+decomp_ob_int = cum_ob.map(row => row.cum_ob_int)
+
+      
+y_axis = obShock.every(i => i > -25)
+      
+      Plotly.react('graph_OBpercentGDP', [
+        { x: times, y: obShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: obBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_ob_pb, type: 'bar', marker: {opacity: 1, color:'#CBAC88'}, name:'Primārā bilance % no IKP', showlegend: false,
+          hovertemplate: 'Primārā bilance: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}},
+          
+        { x: times, y: decomp_ob_int, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name:'Procentu maksājumi', showlegend: false,
+          hovertemplate: 'Procentu maksājumi: %{y}<extra></extra>'},
+        { x: times, y: decomp_ob_gdp, type: 'bar', marker: {opacity: 1, color:'#2878A1'}, name:'reālā IKP pieauguma temps', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'},
+        { x: times, y: decomp_ob_inf, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name:'inflācija', showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Kopējā budžeta bilance (% no IKP)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible:y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.13,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Kopējā budžeta bilance atspoguļo valsts neto<br>ienākumus. Tā sastāv no diviem komponentiem:<br> <br>primārās bilances, kas ietver valsts ienākumus<br></b>(galvenokārt nodokļus)<b> izņemot ar parādu nesaistītus<br>izdevumus </b>(piemēram, sociālajai aizsardzībai, veselībai)<b>;<br>procentu maksājumiem, kas ir atkarīgi no Latvijas<br>valsts obligāciju procentu likmes un parāda līmeņa.<br> <br>Ja kopējā budžeta bilance ir negatīva, šo deficītu<br>valsts finansē ar papildus aizņēmumu.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+        
+        
+      }, 
+      PLOT_CFG);
+      
+      
+      // DEBT
+      const debtShock = combinedData.map(row => row.DEBT_1);
+      const debtBase = combinedData.map(row => row.DEBT);
+      Plotly.react('graph_DEBT', [
+        { x: times, y: debtShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: debtBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Parāds (milj. EUR)',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+      // GDPn
+      const gdprShock = combinedData.map(row => row.GDPn_1);
+      const gdprBase = combinedData.map(row => row.GDPn);
+      Plotly.react('graph_GDPn', [
+        { x: times, y: gdprShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: gdprBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Nominālais IKP (milj. EUR)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+      // PBpercentGDP
+      const pbShock = combinedData.map(row => row.PBpercentGDP_1);
+      const pbBase = combinedData.map(row => row.PBpercentGDP);
+      Plotly.react('graph_PBpercentGDP', [
+        { x: times, y: pbShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: pbBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Primārā bilance (% no IKP)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+      // gRate
+      const gRateShock = combinedData.map(row => row.gRate_1);
+      const gRateBase = combinedData.map(row => row.gRate);
+      
+      const decomp_gdp = combinedData.map(row => row.decomp_gdp_1);
+      const decomp_gdp_ecb = combinedData.map(row => row.decomp_gdp_ecb_1 - row.decomp_gdp_ecb);
+      const decomp_gdp_pb = combinedData.map(row => row.decomp_gdp_pb_1 - row.decomp_gdp_pb);
+      const decomp_gdp_inf = combinedData.map(row => row.decomp_gdp_inf_1 - row.decomp_gdp_inf);
+y_axis = gRateShock.every(i => i > -25)
+      Plotly.react('graph_gRate', [
+        { x: times, y: gRateShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: gRateBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_gdp, type: 'bar', marker: {opacity: 1, color: '#2878A1'},name: 'g', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'},
+        { x: times, y: decomp_gdp_ecb, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name: 'ECB', showlegend: false,
+          hovertemplate: 'LV obligāciju likme: %{y}<extra></extra>'},
+        { x: times, y: decomp_gdp_pb, type: 'bar', marker: {opacity: 1, color:'#CBAC88'}, name: 'PB', showlegend: false,
+          hovertemplate: 'Primārā bilance: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}},
+        { x: times, y: decomp_gdp_inf, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name: 'Inflācija', showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Reālā IKP izaugsme (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible:y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+        
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],
+       
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.2,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Reālais IKP reprezentē valsts pievienoto <br>ekonomisko vērtību attiecīgajā gadā.<br> <br>To ietekmē darbaspēka, kapitāla, un ražīguma šoki,<br>primārā bilance </b>(valsts investīcijas, nodokļu slogs)<b>,<br>Latvijas valsts obligāciju procentu likme </b>(riska<br>rādītājs ārējiem investoriem)<b>, un inflācija </b>(konkurētspēja<br>ar citu valstu cenām, deflācijas spirāle)<b>.<br> <br>Ja reālais IKP pieaug pārāk strauji </b>(virs potenciālās<br>izlaides) <b>ekonomika pārkarst, un inflācija pieaug.<br>Taču galvenokārt ietekme ir pozitīva. Valsts spēj<br>palielināt investīcijas </b>(nemainot primārās bilances<br>attiecību)<b>, un pārējo rādītāju attiecības izteiktas<br>pret IKP samazinās.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+        
+        
+      }, PLOT_CFG);
+      
+      
+      // OBmEUR
+      const obmShock = combinedData.map(row => row.OBmEUR_1);
+      const obmBase = combinedData.map(row => row.OBmEUR);
+      Plotly.react('graph_OBmEUR', [
+        { x: times, y: obmShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: obmBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Kopējā budžeta bilance (milj. EUR)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative'
+      }, PLOT_CFG);
+      // PBmEUR
+      const pbmShock = combinedData.map(row => row.PBmEUR_1);
+      const pbmBase = combinedData.map(row => row.PBmEUR);
+      Plotly.react('graph_PBmEUR', [
+        { x: times, y: pbmShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: pbmBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Primārā bilance (milj. EUR)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+      // LVyield
+      const yieldShock = combinedData.map(row => row.LVyield_1);
+      const yieldBase = combinedData.map(row => row.LVyield);
+      
+      const decomp_lv = combinedData.map(row => row.decomp_lv_1);
+      const decomp_lv_ecb = combinedData.map(row => row.decomp_lv_ecb_1-row.decomp_lv_ecb);
+      const decomp_lv_dbt = combinedData.map(row => row.decomp_lv_dbt_1-row.decomp_lv_dbt);
+      const decomp_lv_ob = combinedData.map(row => row.decomp_lv_ob_1);
+y_axis = yieldShock.every(i => i < 15)
+      Plotly.react('graph_LVyield', [
+        { x: times, y: yieldShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: yieldBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_lv, type: 'bar', marker: {opacity: 1, color:'#d34f73'},name: 'LV riska prēmija', showlegend: false,
+          hovertemplate: 'LV riska prēmija: %{y}<extra></extra>'},
+        { x: times, y: decomp_lv_ecb, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name: 'ECB', showlegend: false,
+          hovertemplate: 'ECB likme: %{y}<extra></extra>'},
+        { x: times, y: decomp_lv_dbt, type: 'bar', marker: {opacity: 1, color:'#444780'},name: 'Parāds', showlegend: false,
+          hovertemplate: 'Parāds: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}},
+        { x: times, y: decomp_lv_ob, type: 'bar', marker: {opacity: 1, color:'#CBAC88'},name: 'OB', showlegend: false,
+          hovertemplate: 'Kopējā budžeta bilance: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>LV obligāciju likme (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible: y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.13,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Latvijas valsts obligāciju procentu likme atbilst<br>tam, kādus procentu maksājumus valsts veic<br>par attiecīgajā gadā saņemto parādu.<br> <br>To nosaka valsts riska prēmija </b>(tas cik politiski un<br>ekonomiski stabila ir valsts)<b>,<br>parāda līmenis pret IKP </b>(sviras risks)<b>,<br>ECB refinansēšanās operāciju procentu likme<br></b>(kontrolē atsauces likmes eirozonā)<b>,<br>budžeta bilances atkārtotas ekstrēmas vērtības<br></b>(konfidence fiskālajā politikā)<b>.<br> <br>Latvijas valsts obligāciju procentu likmes<br>pieauguma rezultātā parāds palielinās, un<br>ekonomiskā izaugsme samazinās </b>(valsts nespēj<br>finansēt investīcijas, ārējie investori uztver valsti<br>par riskantāku)<b>.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+        
+        
+        
+      }, PLOT_CFG);
+      
+      
+      // ECB refinancing rate
+      const ecbShock = combinedData.map(row => row.ECBrefinancingRate_1);
+      const ecbBase = combinedData.map(row => row.ECBrefinancingRate);
+      const decomp_ecb = combinedData.map(row => row.decomp_ecb_1);
+      const decomp_ecb_infl = combinedData.map(row => row.decomp_ecb_infl_1-row.decomp_ecb_infl);
+      Plotly.react('graph_ECBrefinancingRate', [
+        { x: times, y: ecbShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: ecbBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_ecb, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name: 'ECB', showlegend: false,
+          hovertemplate: 'ECB likme: %{y}<extra></extra>'},
+        { x: times, y: decomp_ecb_infl, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name:'Inflācija', showlegend: false, showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>'}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>ECB likme (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.13,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Redzamā likme ir ECB refinansēšanās operāciju<br>procentu likme, kas nosaka to, kādi būs procentu<br>maksājumi, bankām aizņemoties no ECB.<br>ECB Padome šo likmi nosaka ar mērķi noturēt<br>kopējo eirozonas inflāciju aptuveni 2 % līmenī.<br> <br>Šī likme ietekmē atsauces likmes </b>(piem., EURIBOR)<b>,<br>kuras, palielinot kredītņēmēju izmaksas, samazina<br>to pieprasījumu pēc precēm un pakalpojumiem.<br>Valsts aizņēmumu likme ir fiksēta, taču ietekme uz<br>jauniem aizņēmumiem atspoguļojas obligācijās.<br> <br>ECB refinansēšanās operāciju procentu likmes<br>pieauguma rezultātā cenu pieaugums palēninās,<br>bet samazinās arī ekonomiskā izaugsme.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+        
+        
+        
+      }, PLOT_CFG);
+      
+      
+      // piGDPdeflator
+      const piShock = combinedData.map(row => row.piGDPdeflator_1);
+      const piBase = combinedData.map(row => row.piGDPdeflator);
+      
+      const decomp_infl = combinedData.map(row => row.decomp_infl_1);
+      const decomp_infl_ecb = combinedData.map(row => row.decomp_infl_ecb_1 - row.decomp_infl_ecb);
+      const decomp_infl_gdp = combinedData.map(row => row.decomp_infl_gdp_1 - row.decomp_infl_gdp);
+y_axis = piShock.every(i => i > -15)
+      Plotly.react('graph_piGDPdeflator', [
+        { x: times, y: piShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: piBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_infl, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name: 'inf', showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}},
+        { x: times, y: decomp_infl_ecb, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name: 'ECB', showlegend: false,
+          hovertemplate: 'ECB likme: %{y}<extra></extra>'},
+        { x: times, y: decomp_infl_gdp, type: 'bar', marker: {opacity: 1, color: '#2878A1'},name: 'g', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'}
+        
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Inflācija (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible: y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05,
+        y: 1.2,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Redzamais inflācijas rādītājs ir IKP deflators. Tas<br>atspoguļo vidējo cenu kāpumu visos ekonomikas<br>sektoros, un to izmanto, lai sadalītu nominālā IKP<br>pieauguma tempu, reālās ekonomikas un cenu <br>kāpumā.<br> <br>To ietekmē pieprasījuma un piedāvājuma šoki,<br>ekonomikas pārkaršana </b>(IKP virs potenciālā)<b>,<br>un ECB refinansēšanās operāciju procentu likme </b><br>(atsauces likme kavē kreditēšanu)<b>.<br> <br>Inflācija ietekmē nominālo IKP </b>(tiešais cenu<br>efekts)<b>, bet arī reālo IKP </b>(konkurences efekts,<br>deflācijas spirāle)<b>. Tā kā daudzi mainīgie tiek mērīti <br>pret IKP, inflācijas efekts atspoguļojas daudzos<br>rādītājos.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+        
+        
+      }, PLOT_CFG);
+      
+      
+      // rMinG
+      const rmgShock = combinedData.map(row => row.rMinG_1);
+      const rmgBase = combinedData.map(row => row.rMinG);
+      const decomp_rmg_g = combinedData.map(row => row.gRate-row.gRate_1);
+      const decomp_rmg_r = combinedData.map(row => row.realRate_1 - row.realRate);
+    y_axis = rmgShock.every(i => i < 100)
+      Plotly.react('graph_rMinG', [
+        { x: times, y: rmgShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: rmgBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+        { x: times, y: decomp_rmg_r, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name: 'rRate', showlegend: false,
+          hovertemplate: 'Reālā efektīvā likme: %{y}<extra></extra>'},
+        { x: times, y: decomp_rmg_g, type: 'bar', marker: {opacity: 1, color: '#2878A1'},name: 'g', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>r-g (pp)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible: y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.15,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>r-g ir parāda ilgtspējības rādītājs, kurš sastāv<br>no 2 mainīgajiem:<br> <br>g: reālā IKP pieauguma tempa </b>(jeb ekonomiskās<br>izaugsmes)<b>;<br>r: reālās efektīvās likmes </b>(jeb kopējo procentu<br>maksājumu pret kopējo parādu attiecības, kura ir<br>koriģēta pret inflāciju)<b>.<br> <br>Ja šīs starpības vērtība paliek virs 0 </b>(r>g)<b>,<br>parāda attiecība pret IKP turpinās augt līdz<br>nekontrolējamam līmenim </b>(parāda līmenis<br>nav uzskatāms par ilgtspējīgu)<b>.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+      }, PLOT_CFG);
+      // INTmEUR
+      const intShock = combinedData.map(row => row.INTmEUR_1);
+      const intBase = combinedData.map(row => row.INTmEUR);
+      Plotly.react('graph_INTmEUR', [
+        { x: times, y: intShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: intBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Procentu maksājumi (milj. EUR)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+
+
+      // interest_pct_gdp
+      const ipgShock = combinedData.map(row => row.interest_pct_gdp_1);
+      const ipgBase = combinedData.map(row => row.interest_pct_gdp);
+      const decomp_ig_int = decomp_ob_int.map(row=> -row);
+      const decomp_ig_gdp = decomp_ob_gdp.map(row=> -row);
+      const decomp_ig_inf = decomp_ob_inf.map(row=> -row);
+    y_axis = ipgShock.every(i => i < 100)
+      Plotly.react('graph_interest_pct_gdp', [
+        { x: times, y: ipgShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: ipgBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' },
+          
+        { x: times, y: decomp_ig_int, type: 'bar', marker: {opacity: 1, color:'#7F7F85'}, name:'Procentu maksājumi', showlegend: false,
+          hovertemplate: 'Procentu maksājumi: %{y}<extra></extra>'},
+        { x: times, y: decomp_ig_gdp, type: 'bar', marker: {opacity: 1, color:'#2878A1'}, name:'reālā IKP pieauguma temps', showlegend: false,
+          hovertemplate: 'Reālā IKP pieauguma temps: %{y}<extra></extra>'},
+        { x: times, y: decomp_ig_inf, type: 'bar', marker: {opacity: 1, color:'#489E9E'}, name:'inflācija', showlegend: false,
+          hovertemplate: 'Inflācija: %{y}<extra></extra>', hoverlabel: {font: {color: 'white'}, bordercolor: 'white'}}
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Procentu maksājumi (% no IKP)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false, visible: y_axis },
+        xaxis: { title: null, showgrid: false },
+        barmode: 'relative',
+
+shapes: [
+        // 1st highlight during Feb 4 - Feb 6
+        {
+            type: 'rect',
+            // x-reference is assigned to the x-values
+            xref: 'x',
+            // y-reference is assigned to the plot paper [0,1]
+            yref: 'paper',
+            x0: '1995',
+            y0: 0,
+            x1: '2076',
+            y1: 1,
+            fillcolor: '#d3d3d3',
+            opacity: (dShock.every(i => i < 300) ? 0 : 0.75),
+            line: {
+                width: 0
+            }
+        }
+],        
+        
+annotations: [
+    {
+        xref: 'paper',
+        yref: 'paper',
+        x: -0.05  ,
+        y: 1.15,
+        
+        text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
+        showarrow: false,
+        hovertext: 
+' <br><b>Procentu maksājumi, izteikti kā % no IKP ir<br>populārs parāda ilgtspējības rādītājs, kurš<br>atspoguļo to, kādu slogu procentu maksājumi<br>rada uz ekonomikas publisko sektoru.<br> <br>Šī vērtība ir atkarīga no procentu maksājumiem,<br>reālā IKP pieauguma tempa, kā arī no inflācijas </b><br>(jo procentu maksājumi ir izteikti pret nominālo IKP)<b>.<br> ',
+        hoverlabel: {
+            bgcolor: '#f0f0f5',
+            bordercolor: 'white',
+            font: {
+                size: 12,
+                color: '#28294f'
+            }
+        }
+    },
+    {
+    xref: 'paper',
+    yref: 'paper',
+    x:0.5, y:0.55,
+    text: '<span style="color: #d34f73; font-weight:bold; font-size:26px">Defolts</span>',
+    showarrow: false,
+    opacity: (dShock.every(i => i < 300) ? 0 : 1)
+    }
+]
+      }, PLOT_CFG);
+      // effectiveRate
+      const effShock = combinedData.map(row => row.effectiveRate_1);
+      const effBase = combinedData.map(row => row.effectiveRate);
+      Plotly.react('graph_effectiveRate', [
+        { x: times, y: effShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: effBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Nominālā efektīvā likme (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+      // realRate
+      const realShock = combinedData.map(row => row.realRate_1);
+      const realBase = combinedData.map(row => row.realRate);
+      Plotly.react('graph_realRate', [
+        { x: times, y: realShock, type: 'scatter', mode: 'lines', name: 'Šoki' },
+        { x: times, y: realBase, type: 'scatter', mode: 'lines', name: 'Bāzes scenārijs' }
+      ], {
+        ...THEME_LAYOUT,
+        title: {
+          text: '<b>Reālā efektīvā likme (%)</b>',
+          x: 0.5,
+          xanchor: 'center',
+          y: 0.95,
+          yanchor: 'top'
+        },
+        yaxis: { title: null, showgrid: false },
+        xaxis: { title: null, showgrid: false }
+      }, PLOT_CFG);
+    }
+
+    // Initial draw
+    redraw();
+  </script>
+
+</div>
+</div>
+</body>
+</html>
