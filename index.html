@@ -115,6 +115,18 @@
     display: none;
     box-shadow: 0px 5px 25px rgb(0 0 0 /30%);
   }
+  .close-x {
+    position: absolute;
+    top: 5px;
+    right: 11px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: rgb(50, 50, 50);
+  }
+  .close-x:hover {
+  color: black;
+  }
   @media (max-width: 500px) {
   .graph-container {
     flex: 0 0 40%;
@@ -507,6 +519,7 @@ Mainīgo vērtību un to efektu periodu var kontrolēt, izmantojot melnos slīd�
 <!-- Overlay for shock start years -->
 
 <div class="overlay" id="graphChooserPanel">
+  <span id="close-btn" class="close-x">&times;</span>
   <div class="control-group">
     <input type="checkbox" id="graph_DEBT_checkbox"> Parāds (milj. EUR)<br>
     <input type="checkbox" id="graph_GDPn_checkbox"> Nominālais IKP (milj. EUR)<br>
@@ -2159,6 +2172,10 @@ primarySlider.noUiSlider.on('slide', function (values, handle) {
       const panel = document.getElementById('graphChooserPanel');
       panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
     });
+    const closeBtn = document.getElementById('close-btn');
+    closeBtn.addEventListener('click', () => {
+      graphChooserPanel.style.display = 'none';
+    });
     
     const checkboxes = document.querySelectorAll('#graphChooserPanel input[type="checkbox"]');
     
@@ -3158,6 +3175,7 @@ annotations: [
 </body>
 
 </html>
+
 
 
 
