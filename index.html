@@ -313,7 +313,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.popup-screen {
+/* .popup-screen {
   z-index: 99999;
   position: fixed;
   background: rgba(255, 255, 255, 0.1);
@@ -327,11 +327,6 @@ a:hover {
   transition: 0.5s ease;
   transition-property: visibility;
 }
-/* @media  (max-width: 500px){
-  .popup-screen{
-    height: 105vh;
-  }
-} */
 .popup-screen.active {
   visibility: visible;
 }
@@ -371,16 +366,16 @@ a:hover {
 .popup-box .btn:hover{
   opacity: 1;
   cursor: pointer;
-}
+} */
 
 </style>
 
-<div class = 'popup-screen'>
+<!-- <div class = 'popup-screen'>
   <div class = 'popup-box'>
     <h4>Šā kalkulatora reakciju rezultāti, kā arī ilgtermiņa prognozes nav Latvijas Bankas oficiālās prognozes.<br>Tās ir paredzētas tikai tam, lai sniegtu ieskatu ar valsts parādu saistītu rādītāju galvenajās mijiedarbībās.<br> <br>Mainīgo savstarpējas elastības lielākoties ir pieņemtas lineāras, un kalkulatorā pieņemts, ka valsts saistību neizpilde (default) iestājas brīdī, kad parāda attiecība pret IKP sasniedz 300 %. Faktiski šīs slieksnis nav nosakāms iepriekš, un tas var iestāties arī pie zemākas parāda un IKP attiecības. Turklāt spēcīgu šoku apstākļos var mainīties arī sakarības starp mainīgajiem (elastības).</h4>
     <a class="btn" >sapratu</a>
   </div>
-</div>
+</div> -->
 <script>
     const popupScreen = document.querySelector('.popup-screen');
     const popupbtn = document.querySelector('.popup-box .btn')
