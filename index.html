@@ -587,7 +587,9 @@ const THEME_LAYOUT = {
     x: 0.5,
     xanchor: 'center',
     yanchor: 'top'
-  }
+  },
+  xaxis: {title: null, showgrid: false, nticks: 10},
+  yaxis: { title: null, showgrid: false, nticks: 10 }
 }
 const inflationSlider = document.getElementById('inflationShockSlider');
 noUiSlider.create(inflationSlider, {
@@ -2295,8 +2297,8 @@ y_axis = dShock.every(i => i < 300)
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, nticks: 5, visible:y_axis},
-        xaxis: { title: null, showgrid: false},
+        yaxis: { title: null, showgrid: false, nticks: 10, visible:y_axis},
+       
         barmode: 'relative',
         
 shapes: [
@@ -2461,8 +2463,7 @@ y_axis = obShock.every(i => i > -25)
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible:y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible:y_axis },
         barmode: 'relative',
 
 shapes: [
@@ -2489,8 +2490,8 @@ annotations: [
     {
         xref: 'paper',
         yref: 'paper',
-        x: -0.05  ,
-        y: 1.13,
+        x: -0.04  ,
+        y: 1.18,
         
         text: '<span style="color: #28294f; font-weight:bold; font-size:16px">ⓘ️</span>',
         showarrow: false,
@@ -2534,9 +2535,8 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
+        
       }, PLOT_CFG);
       // GDPn
       const gdprShock = combinedData.map(row => row.GDPn_1);
@@ -2552,9 +2552,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
       // PBpercentGDP
       const pbShock = combinedData.map(row => row.PBpercentGDP_1);
@@ -2570,9 +2568,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
       // gRate
       const gRateShock = combinedData.map(row => row.gRate_1);
@@ -2603,8 +2599,7 @@ y_axis = gRateShock.every(i => i > -25)
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible:y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible:y_axis },
         barmode: 'relative',
         
 
@@ -2677,8 +2672,6 @@ annotations: [
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false },
         barmode: 'relative'
       }, PLOT_CFG);
       // PBmEUR
@@ -2695,9 +2688,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
       // LVyield
       const yieldShock = combinedData.map(row => row.LVyield_1);
@@ -2728,8 +2719,7 @@ y_axis = yieldShock.every(i => i < 15)
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible: y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible: y_axis },
         barmode: 'relative',
 
 shapes: [
@@ -2808,8 +2798,7 @@ annotations: [
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10 },
         barmode: 'relative',
 
 shapes: [
@@ -2894,8 +2883,7 @@ y_axis = piShock.every(i => i > -15)
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible: y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible: y_axis },
         barmode: 'relative',
 
 
@@ -2975,8 +2963,7 @@ annotations: [
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible: y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible: y_axis },
         barmode: 'relative',
 
 shapes: [
@@ -3043,9 +3030,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
 
 
@@ -3075,8 +3060,7 @@ annotations: [
           y: 0.95,
           yanchor: 'top'
         },
-        yaxis: { title: null, showgrid: false, visible: y_axis },
-        xaxis: { title: null, showgrid: false },
+        yaxis: { title: null, showgrid: false, nticks: 10, visible: y_axis },
         barmode: 'relative',
 
 shapes: [
@@ -3143,9 +3127,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
       // realRate
       const realShock = combinedData.map(row => row.realRate_1);
@@ -3161,9 +3143,7 @@ annotations: [
           xanchor: 'center',
           y: 0.95,
           yanchor: 'top'
-        },
-        yaxis: { title: null, showgrid: false },
-        xaxis: { title: null, showgrid: false }
+        }
       }, PLOT_CFG);
     }
 
