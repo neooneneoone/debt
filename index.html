@@ -1642,6 +1642,13 @@ primarySlider.noUiSlider.on('slide', function (values, handle) {
           forecast_Pi[i] = forecast_Pi[i]+0.49
         }
 
+        if (forecast_Pi[i]<=-99){
+          decomp_infl[i] = decomp_infl[i] / forecast_Pi[i] * (-99);
+          decomp_infl_gdp[i] = decomp_infl_gdp[i] / forecast_Pi[i] * (-99);
+          decomp_infl_ecb[i] = decomp_infl_ecb[i] / forecast_Pi[i] * (-99);
+          forecast_Pi[i] = -99;
+        }
+
 
           // LVyield
         decomp_lv[i] = ((years[i] >= shockIntervals.LV[0] && years[i] <= shockIntervals.LV[1] && stLVpremium[i] != 0) ? stLVpremium : 0);
@@ -1712,6 +1719,14 @@ primarySlider.noUiSlider.on('slide', function (values, handle) {
           } else if (years[i]>2028){
             forecast_gRate[i] = forecast_gRate[i] + 0.2
           } 
+
+          if (forecast_gRate[i]<=-99){
+            decomp_gdp[i] = decomp_gdp[i] / forecast_gRate[i] * (-99);
+            decomp_gdp_ecb[i] = decomp_gdp_ecb[i] / forecast_gRate[i] * (-99);
+            decomp_gdp_pb[i] = decomp_gdp_pb[i] / forecast_gRate[i] * (-99);
+            decomp_gdp_inf[i] = decomp_gdp_inf[i] / forecast_gRate[i] * (-99);
+            forecast_gRate[i] = -99;
+          }
           
           if ((forecast_GDPn[i-1] ?? filtered.GDPn) <= 0.0001){
             
@@ -3169,6 +3184,7 @@ annotations: [
 </body>
 
 </html>
+
 
 
 
