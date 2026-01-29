@@ -1713,7 +1713,7 @@ primarySlider.noUiSlider.on('slide', function (values, handle) {
             forecast_gRate[i] = forecast_gRate[i] + 0.2
           } 
           
-          if ((forecast_GDPn[i-2] ?? filtered.GDPn) <= 0.0001){
+          if ((forecast_GDPn[i-1] ?? filtered.GDPn) <= 0.0001){
             
             forecast_gRate[i] = 0;
             decomp_gdp[i] = 0;
@@ -3157,6 +3157,7 @@ annotations: [
 </body>
 
 </html>
+
 
 
 
