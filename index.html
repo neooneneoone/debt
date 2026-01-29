@@ -2414,7 +2414,7 @@ const cum_ob = combinedData.map(row => {
     scale_3 = Math.abs(sum_ob_3) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
     
       sum_ob_1 = sum_ob_1 + sum_ob_4 * scale_1;
-      if(row.decomp_ob_gdp_past_1 > 0.0001){
+      if(true){//(row.decomp_ob_gdp_past_1 > 0.0001){
         sum_ob_2 = sum_ob_2 + sum_ob_4 * scale_2;
         sum_ob_3 = sum_ob_3 + sum_ob_4 * scale_3;
       } else{
@@ -3157,6 +3157,7 @@ annotations: [
 </body>
 
 </html>
+
 
 
 
