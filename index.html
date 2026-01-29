@@ -2238,27 +2238,34 @@ const cum = combinedData.map(row => {
         
   
   const approx_error = (row.dPercentageGDP_1-row.dPercentageGDP) - (sum_1 ?? 0) - (sum_2 ?? 0) - (sum_3 ?? 0) -  (sum_4 ?? 0);
-  if (row.DEBT_1 != 0.001 && (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0){
-    scale_1 = 0;
-    scale_2 =( Math.abs(sum_2) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
-    scale_3 =( Math.abs(sum_3) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
-    scale_4 =( Math.abs(sum_4) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
-  } else if ((Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0) {
-    scale_1 = Math.abs(sum_1) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
-    scale_2 = Math.abs(sum_2) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
-    scale_3 = Math.abs(sum_3) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
-    scale_4 = Math.abs(sum_4) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
-  } else {
-    scale_1 = 0;
-    scale_2 = 0;
-    scale_3 = 0;
-    scale_4 = 0;
-  }
-  sum_1 = sum_1 + approx_error * scale_1;
-  sum_2 = sum_2 + approx_error * scale_2;
-  sum_3 = sum_3 + approx_error * scale_3;
-  sum_4 = sum_4 + approx_error * scale_4;
 
+  if (row.GDPn_1 > 0.0001) {
+    if (row.DEBT_1 != 0.001 && (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0){
+      scale_1 = 0;
+      scale_2 =( Math.abs(sum_2) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+      scale_3 =( Math.abs(sum_3) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+      scale_4 =( Math.abs(sum_4) / (Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) )?? 0;
+    } else if ((Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) != 0) {
+      scale_1 = Math.abs(sum_1) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+      scale_2 = Math.abs(sum_2) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+      scale_3 = Math.abs(sum_3) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+      scale_4 = Math.abs(sum_4) / (Math.abs(sum_1) + Math.abs(sum_2) + Math.abs(sum_3) + Math.abs(sum_4)) ?? 0;
+    } else {
+      scale_1 = 0;
+      scale_2 = 0;
+      scale_3 = 0;
+      scale_4 = 0;
+    }
+    sum_1 = sum_1 + approx_error * scale_1;
+    sum_2 = sum_2 + approx_error * scale_2;
+    sum_3 = sum_3 + approx_error * scale_3;
+    sum_4 = sum_4 + approx_error * scale_4;
+  } else {
+    sum_3 = sum_3 + approx_error + sum_1 + sum_2 + sum_4;
+    sum_1 = 0;
+    sum_2 = 0;
+    sum_4 = 0;
+  }
 
   
   return {
@@ -2406,23 +2413,28 @@ const cum_ob = combinedData.map(row => {
         
         
         sum_ob_4 = decomp_ob_int_total - sum_ob_1-sum_ob_2-sum_ob_3;
-        
-    if (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3) !=0){
-        
-    scale_1 = Math.abs(sum_ob_1) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
-    scale_2 = Math.abs(sum_ob_2) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
-    scale_3 = Math.abs(sum_ob_3) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
-    
-      sum_ob_1 = sum_ob_1 + sum_ob_4 * scale_1;
-      if(true){//(row.decomp_ob_gdp_past_1 > 0.0001){
-        sum_ob_2 = sum_ob_2 + sum_ob_4 * scale_2;
-        sum_ob_3 = sum_ob_3 + sum_ob_4 * scale_3;
-      } else{
-        sum_ob_2 = 0;
-        sum_ob_3 = 0;
+    if (row.GDPn_1 > 0.0001) {
+      if (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3) !=0){
+          
+      scale_1 = Math.abs(sum_ob_1) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+      scale_2 = Math.abs(sum_ob_2) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+      scale_3 = Math.abs(sum_ob_3) / (Math.abs(sum_ob_1) + Math.abs(sum_ob_2) + Math.abs(sum_ob_3));
+      
+        sum_ob_1 = sum_ob_1 + sum_ob_4 * scale_1;
+        if(true){//(row.decomp_ob_gdp_past_1 > 0.0001){
+          sum_ob_2 = sum_ob_2 + sum_ob_4 * scale_2;
+          sum_ob_3 = sum_ob_3 + sum_ob_4 * scale_3;
+        } else{
+          sum_ob_2 = 0;
+          sum_ob_3 = 0;
+        }
       }
+    } else {
+      sum_ob_2 = sum_ob_2 + sum_ob_4 + sum_ob_1 + sum_ob_3;
+      sum_ob_1 = 0;
+      sum_ob_3 = 0;
     }
-        
+      
         
   }
 
@@ -3157,6 +3169,7 @@ annotations: [
 </body>
 
 </html>
+
 
 
 
